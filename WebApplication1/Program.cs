@@ -51,6 +51,7 @@ app.MapGet("/weatherforecast", () =>
 });
 
 ejercicio1.Correr();
+ejercicio2.Correr();
 
 app.Run();
 

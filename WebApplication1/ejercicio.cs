@@ -3,6 +3,10 @@ public class ejercicio1
 {
     public static void Correr()
     {
+        Console.WriteLine("..............................................");
+        Console.WriteLine("\t ejercicio1");
+        Console.WriteLine("..............................................");
+
         Console.WriteLine("Hola desde mis ejercicios!");
         // todo tu código de prueba aquí
 
