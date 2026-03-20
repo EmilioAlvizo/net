@@ -11,10 +11,10 @@ public class Cliente
     public int ClienteId { get; set; }
 
     [Column("nombre")]
-    public string Nombre { get; set; } = string.Empty;
+    public string? Nombre { get; set; } = string.Empty;
 
     [Column("edad")]
-    public int Edad { get; set; }
+    public int? Edad { get; set; }
 
     [Column("fecha_nacimiento")]
     public DateTime? FechaNacimiento { get; set; }
