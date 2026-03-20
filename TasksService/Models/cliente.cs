@@ -17,5 +17,5 @@ public class Cliente
     public int Edad { get; set; }
 
     [Column("fecha_nacimiento")]
-    public DateTime FechaNacimiento { get; set; }
+    public DateTime? FechaNacimiento { get; set; }
 }
