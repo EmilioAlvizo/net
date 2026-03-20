@@ -7,14 +7,9 @@ namespace TasksService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClientesController : ControllerBase
+public class ClientesController(AppDbContext db) : ControllerBase
 {
-    private readonly AppDbContext _db;
-
-    public ClientesController(AppDbContext db)
-    {
-        _db = db;
-    }
+    private readonly AppDbContext _db = db;
 
     // GET api/clientes — obtener todos
     [HttpGet]
