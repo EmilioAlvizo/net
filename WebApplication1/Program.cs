@@ -1,4 +1,6 @@
 // WebApplication1/Program.cs
+using System.Linq.Expressions;
+
 Console.WriteLine(".............................................." );
 Console.WriteLine("hola, mundo");
 Console.WriteLine("The current time is " + DateTime.Now);
@@ -52,6 +54,8 @@ app.MapGet("/weatherforecast", () =>
 
 ejercicio1.Correr();
 ejercicio2.Correr();
+ejercicio3.Correr();
+switchCase.Correr();
 
 app.Run();
 
