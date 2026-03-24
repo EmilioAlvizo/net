@@ -3,9 +3,9 @@ using TasksService.Models;
 
 namespace TasksService.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
     public DbSet<Cliente> Clientes { get; set; }
+    public DbSet<Producto> Productos { get; set; }
     
 }
