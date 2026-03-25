@@ -1,14 +1,15 @@
+// Controllers/ProductosController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using TasksService.Data;
 using TasksService.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace TasksService.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // protege TODOS los endpoints de este controller
+//[Authorize] // protege TODOS los endpoints de este controller
 public class ProductosController(AppDbContext db) : ControllerBase
 {
     private readonly AppDbContext _db = db;
@@ -18,11 +19,26 @@ public class ProductosController(AppDbContext db) : ControllerBase
     /// </summary>
     /// <returns>Lista de productos</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] ProductoFiltro filtro)
+    {
+        var query = _db.Productos
+        .AsNoTracking()
+        .AplicarFiltros(filtro);
+
+        // 📦 Paginación
+        var resultado = await PagedResponse<Producto>.CrearAsync(
+            query,
+            filtro.Pagina,
+            filtro.TamanoPagina
+        );
+
+        return Ok(resultado);
+    }
+    /* public async Task<IActionResult> GetAll()
     {
         var productos = await _db.Productos.ToListAsync();
         return Ok(productos);
-    }
+    } */
 
     /// <summary>
     /// Obtiene un producto por su ID

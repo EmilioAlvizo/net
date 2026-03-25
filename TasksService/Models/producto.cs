@@ -1,3 +1,4 @@
+// Models/Producto.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ public class Producto
     public int ProductoId { get; set; }
 
     [Column("cliente")]
-    public int? Cliente { get; set; }
+    public int? ClienteId { get; set; }
 
     [Column("codigo")]
     public string? Codigo { get; set; } = string.Empty;
