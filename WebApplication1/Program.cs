@@ -56,7 +56,7 @@ ejercicio1.Correr();
 ejercicio2.Correr();
 ejercicio3.Correr();
 switchCase.Correr();
-
+prueba.Correr().Wait();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

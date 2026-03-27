@@ -27,3 +27,13 @@ C:\Users\ealvizo\Documents\net\WebApplication1\obj\Debug\net10.0\refint\WebAppli
 C:\Users\ealvizo\Documents\net\WebApplication1\obj\Debug\net10.0\WebApplication1.pdb
 C:\Users\ealvizo\Documents\net\WebApplication1\obj\Debug\net10.0\WebApplication1.genruntimeconfig.cache
 C:\Users\ealvizo\Documents\net\WebApplication1\obj\Debug\net10.0\ref\WebApplication1.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\obj\Debug\net10.0\WebApplication1.csproj.AssemblyReference.cache
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\ClosedXML.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\ClosedXML.Parser.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\DocumentFormat.OpenXml.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\ExcelNumberFormat.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\RBush.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\SixLabors.Fonts.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\bin\Debug\net10.0\System.IO.Packaging.dll
+C:\Users\ealvizo\Documents\net\WebApplication1\obj\Debug\net10.0\WebAppli.7D14BD69.Up2Date
