@@ -19,7 +19,7 @@ public class ProductosController(AppDbContext db) : ControllerBase
     /// </summary>
     /// <returns>Lista de productos</returns>
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] ProductoFiltro filtro)
+        public async Task<IActionResult> GetAll([FromQuery] ProductoFiltro filtro)
     {
         var query = _db.Productos
         .AsNoTracking()
@@ -53,6 +53,9 @@ public class ProductosController(AppDbContext db) : ControllerBase
 
     // POST api/productos - crear nuevo producto
     [HttpPost]
+    [EndpointSummary("Obtiene la lista completa de productos")]
+    [EndpointDescription("Este endpoint devuelve todos los productos disponibles con sus precios.")]
+
     public async Task<IActionResult> Create(Producto producto)
     {
         _db.Productos.Add(producto);

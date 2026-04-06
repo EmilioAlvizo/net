@@ -5,13 +5,34 @@ using TasksService.Data;
 using Microsoft.OpenApi;
 using System.Reflection;
 using System.Text;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Repositorios
+//builder.Services.AddScoped<IEjemplarRepository, EjemplarRepository>();
+
+// Servicios
+//builder.Services.AddScoped<IEjemplarService, EjemplarService>();
 
 // Servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Info = new()
+        {
+            Title = "Esta es mi api",
+            Version = "v1",
+            Description = "Is Swagger dead in .NET? With the release of .NET 9 and .NET 10, Microsoft has officially removed Swashbuckle (Swagger) from the default project templates — although you can still use it by manually adding the NuGet package. Now, it's time to explore the new alternative: Scalar — a modern, high-performance solution for API documentation. In this video, we’ll transform a raw OpenAPI JSON specification into a stunning, interactive, Stripe-level documentation UI using Scalar — complete with built-in dark mode and a professional API playground."
+        };
+        return Task.CompletedTask;
+    });
+});
+/* builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
@@ -43,12 +64,15 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-});
+}); */
 
-// Base de datos
+// (PostgreSQL / Supabase)
 builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Base de datos (SQL Server)
+/* builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+ */
 // JWT
 var secretKey = builder.Configuration["Jwt:SecretKey"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -74,8 +98,13 @@ var app = builder.Build();
 // Pipeline
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //scalar
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+
+    // swagger
+    /* app.UseSwagger();
+    app.UseSwaggerUI(); */
 }
 
 app.UseHttpsRedirection();
