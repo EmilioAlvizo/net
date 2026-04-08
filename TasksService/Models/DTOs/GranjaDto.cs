@@ -1,12 +1,34 @@
 // Models/DTOs/GranjaDto.cs
 namespace TasksService.Models.DTOs;
-public class GranjaDto
+
+// ─────────────────────────────────────────────
+// Lo que devuelves en GET
+// ─────────────────────────────────────────────
+public class LeerGranjaDto
 {
-    public Guid Id { get; set; }
-    public Guid OwnerId { get; set; }
-    public string Nombre { get; set; } = null!;
+    public Guid   Id          { get; set; }
+    public string Nombre      { get; set; } = null!;
     public string? Descripcion { get; set; }
-    public string? Ubicacion { get; set; }
-    public Guid CreatedBy { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public string? Ubicacion   { get; set; }
+    public Guid   OwnerId     { get; set; }
+}
+
+// ─────────────────────────────────────────────
+// Lo que recibes en POST
+// ─────────────────────────────────────────────
+public class CrearGranjaDto
+{
+    public string  Nombre      { get; set; } = null!;
+    public string? Descripcion { get; set; }
+    public string? Ubicacion   { get; set; }
+}
+
+// ─────────────────────────────────────────────
+// Lo que recibes en PUT (solo campos editables)
+// ─────────────────────────────────────────────
+public class ActualizarGranjaDto
+{
+    public string  Nombre      { get; set; } = null!;
+    public string? Descripcion { get; set; }
+    public string? Ubicacion   { get; set; }
 }

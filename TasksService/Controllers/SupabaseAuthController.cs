@@ -8,7 +8,7 @@ using TasksService.Models.DTOs;
 namespace TasksService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/gallinas/[controller]")]
 public class SupabaseAuthController : ControllerBase
 {
     private readonly GranjaDbContext _db;

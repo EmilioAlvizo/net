@@ -6,12 +6,15 @@ using System.Reflection;
 using System.Text;
 using Scalar.AspNetCore;
 using TasksService.Data;
+using TasksService.Data.Repositories;
 using TasksService.Services;
 
+DotNetEnv.Env.Load();  // carcar la environment
 var builder = WebApplication.CreateBuilder(args);
 
 // Repositorios
 //builder.Services.AddScoped<IEjemplarRepository, EjemplarRepository>();
+builder.Services.AddScoped<IGranjaRepository, GranjaRepository>();
 
 // Servicios
 //builder.Services.AddScoped<IEjemplarService, EjemplarService>();
@@ -19,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IGranjaService, GranjaService>();
 builder.Services.AddHttpClient<SupabaseAuthService>();
 
 builder.Services.AddOpenApi(options =>

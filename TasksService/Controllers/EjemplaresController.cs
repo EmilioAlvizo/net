@@ -7,7 +7,7 @@ using TasksService.Models;
 namespace TasksService.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/gallinas/[controller]")]
 public class EjemplaresController : ControllerBase
 {
     private readonly IEjemplarService _service;
