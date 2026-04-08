@@ -34,11 +34,6 @@ public class ProductosController(AppDbContext db) : ControllerBase
 
         return Ok(resultado);
     }
-    /* public async Task<IActionResult> GetAll()
-    {
-        var productos = await _db.Productos.ToListAsync();
-        return Ok(productos);
-    } */
 
     /// <summary>
     /// Obtiene un producto por su ID

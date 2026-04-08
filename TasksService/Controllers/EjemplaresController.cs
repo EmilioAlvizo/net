@@ -1,3 +1,4 @@
+// controllers/ejemplarescontroller.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TasksService.Data.Entities;
@@ -36,7 +37,34 @@ public class EjemplaresController : ControllerBase
 
     // POST api/ejemplares
     [HttpPost]
-    public async Task<IActionResult> Registrar([FromBody] Ejemplares ejemplar)
+    public async Task<IActionResult> Registrar([FromBody] CrearEjemplarDto dto)
+    {
+        var ejemplar = new Ejemplares
+        {
+            GranjaId = dto.GranjaId,
+            TipoAnimalId = dto.TipoAnimalId,
+            GrupoId = dto.GrupoId,
+            Brazalete = dto.Brazalete,
+            PropositoId = dto.PropositoId,
+            TipoAdquisicionId = dto.TipoAdquisicionId,
+            FechaAdquisicion = dto.FechaAdquisicion,
+            CostoAdquisicion = dto.CostoAdquisicion,
+            Notas = dto.Notas,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = Guid.Parse("00000000-0000-0000-0000-000000000001") // temporal
+        };
+
+        try
+        {
+            var resultado = await _service.RegistrarAsync(ejemplar);
+            return CreatedAtAction(nameof(GetByGrupo), new { grupoId = resultado.GrupoId }, resultado.Id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { mensaje = ex.Message });
+        }
+    }
+    /* public async Task<IActionResult> Registrar([FromBody] Ejemplares ejemplar)
     {
         try
         {
@@ -48,14 +76,25 @@ public class EjemplaresController : ControllerBase
         {
             return Conflict(new { mensaje = ex.Message });
         }
-    }
+    } */
 
     // POST api/ejemplares/{id}/baja
     [HttpPost("{id}/baja")]
-    public async Task<IActionResult> DarDeBaja(Guid id, [FromBody] BajasEjemplares baja)
+    public async Task<IActionResult> DarDeBaja(Guid id, [FromBody] DarDeBajaDto dto)
     {
         try
         {
+            var baja = new BajasEjemplares
+            {
+                EjemplarId = id,
+                RazonBajaId = dto.RazonBajaId,
+                ImporteVenta = dto.ImporteVenta,
+                FechaBaja = dto.FechaBaja,
+                Notas = dto.Notas,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = Guid.Parse("00000000-0000-0000-0000-000000000001")
+            };
+
             await _service.DarDeBajaAsync(id, baja);
             return NoContent();
         }

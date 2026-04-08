@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using TasksService.Data;
 using Microsoft.OpenApi;
 using System.Reflection;
 using System.Text;
 using Scalar.AspNetCore;
+using TasksService.Data;
+using TasksService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient<SupabaseAuthService>();
 
 builder.Services.AddOpenApi(options =>
 {
@@ -66,9 +68,14 @@ builder.Services.AddOpenApi(options =>
     c.IncludeXmlComments(xmlPath);
 }); */
 
+//esto es para el primer endpoint que hice
+/* builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))); */
+    
 // (PostgreSQL / Supabase)
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<GranjaDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Base de datos (SQL Server)
 /* builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
