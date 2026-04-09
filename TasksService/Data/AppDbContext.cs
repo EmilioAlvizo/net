@@ -1,11 +1,18 @@
 using Microsoft.EntityFrameworkCore;
-using TasksService.Models;
+using TasksService.Entities;
 
 namespace TasksService.Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext : DbContext
 {
-    public DbSet<Cliente> Clientes { get; set; }
-    public DbSet<Producto> Productos { get; set; }
-    
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+    public DbSet<Perfil> Perfiles => Set<Perfil>();
+    public DbSet<Granja> Granjas => Set<Granja>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Perfil>().ToTable("perfiles");
+        modelBuilder.Entity<Granja>().ToTable("granjas");
+    }
 }

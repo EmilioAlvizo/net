@@ -1,35 +1,53 @@
 using Microsoft.EntityFrameworkCore;
 using TasksService.Data;
-using TasksService.Data.Entities;
+using TasksService.Entities;
+using TasksService.Models.DTOs.GranjasDto;
+using TasksService.Repositories.Interfaces;
 
-namespace TasksService.Data.Repositories;
+namespace TasksService.Repositories;
 
-public interface IGranjaRepository : IRepository<Granjas>
+public class GranjaRepository : IGranjaRepository
 {
-    // Todas las granjas donde el usuario es miembro (owner, editor o viewer)
-    Task<IEnumerable<Granjas>> GetByUsuarioAsync(Guid userId);
+    private readonly AppDbContext _ctx;
 
-    // Solo las granjas donde el usuario es owner
-    Task<IEnumerable<Granjas>> GetPropiasByUsuarioAsync(Guid userId);
-}
+    public GranjaRepository(AppDbContext ctx) => _ctx = ctx;
 
-public class GranjaRepository : Repository<Granjas>, IGranjaRepository
-{
-    public GranjaRepository(GranjaDbContext context) : base(context) { }
+    public async Task<IEnumerable<Granja>> GetAllAsync() =>
+        await _ctx.Granjas.ToListAsync();
 
-    public async Task<IEnumerable<Granjas>> GetByUsuarioAsync(Guid userId)
+    public async Task<IEnumerable<Granja>> GetByOwnerAsync(Guid ownerId) =>
+        await _ctx.Granjas.Where(g => g.OwnerId == ownerId).ToListAsync();
+
+    public async Task<Granja?> GetByIdAsync(Guid id) =>
+        await _ctx.Granjas.FindAsync(id);
+
+    public async Task<Granja> CreateAsync(Granja granja)
     {
-        return await _context.Granjas
-            .Where(g => g.MiembrosGranja.Any(m => m.UserId == userId))
-            .OrderBy(g => g.Nombre)
-            .ToListAsync();
+        _ctx.Granjas.Add(granja);
+        await _ctx.SaveChangesAsync();
+        return granja;
     }
 
-    public async Task<IEnumerable<Granjas>> GetPropiasByUsuarioAsync(Guid userId)
+    public async Task<Granja?> UpdateAsync(Guid id, UpdateGranjaDto dto)
     {
-        return await _context.Granjas
-            .Where(g => g.OwnerId == userId)
-            .OrderBy(g => g.Nombre)
-            .ToListAsync();
+        var granja = await _ctx.Granjas.FindAsync(id);
+        if (granja is null) return null;
+
+        if (dto.Nombre is not null) granja.Nombre = dto.Nombre;
+        if (dto.Descripcion is not null) granja.Descripcion = dto.Descripcion;
+        if (dto.Ubicacion is not null) granja.Ubicacion = dto.Ubicacion;
+
+        await _ctx.SaveChangesAsync();
+        return granja;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var granja = await _ctx.Granjas.FindAsync(id);
+        if (granja is null) return false;
+
+        _ctx.Granjas.Remove(granja);
+        await _ctx.SaveChangesAsync();
+        return true;
     }
 }

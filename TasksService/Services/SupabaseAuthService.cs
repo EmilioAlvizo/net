@@ -1,6 +1,3 @@
-// Services/SupabaseAuthService.cs
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 
 namespace TasksService.Services;
@@ -8,57 +5,63 @@ namespace TasksService.Services;
 public class SupabaseAuthService
 {
     private readonly HttpClient _http;
-    private readonly IConfiguration _config;
+    private readonly string _supabaseUrl;
+    private readonly string _anonKey;
 
-    public SupabaseAuthService(HttpClient http, IConfiguration config)
+    public SupabaseAuthService(HttpClient http, SupabaseConfig config)
     {
         _http = http;
-        _config = config;
+        _supabaseUrl = config.Url;
+        _anonKey = config.AnonKey;
     }
 
-    public async Task<Guid> RegisterUserAsync(string email, string password, string nombre)
+    public async Task<string?> LoginAsync(string email, string password)
     {
-        var url = _config["Supabase:Url"];
-        var serviceKey = _config["Supabase:ServiceRoleKey"];
-
-        // Usamos el endpoint admin para crear usuarios sin necesitar confirmación de email
-        var request = new HttpRequestMessage(
-            HttpMethod.Post,
-            $"{url}/auth/v1/admin/users");
-
-        request.Headers.Authorization =
-            new AuthenticationHeaderValue("Bearer", serviceKey);
-        request.Headers.Add("apikey", serviceKey);
-
-        var body = new
+        var url = $"{_supabaseUrl}/auth/v1/token?grant_type=password";
+        var request = new HttpRequestMessage(HttpMethod.Post, url)
         {
-            email,
-            password,
-            email_confirm = true,  // confirma el email automáticamente
-            user_metadata = new
-            {
-                nombre = nombre
-            }
+            Content = JsonContent.Create(new { email, password })
+        };
+        request.Headers.Add("apikey", _anonKey);
+
+        var response = await _http.SendAsync(request);
+        if (!response.IsSuccessStatusCode) return null;
+
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        return json.GetProperty("access_token").GetString();
+    }
+
+    /* public async Task<bool> RegisterAsync(string email, string password)
+    {
+        var url     = $"{_supabaseUrl}/auth/v1/signup";
+        var request = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = JsonContent.Create(new { email, password })
+        };
+        request.Headers.Add("apikey", _anonKey);
+
+        var response = await _http.SendAsync(request);
+        return response.IsSuccessStatusCode;
+    } */
+    public async Task<bool> RegisterAsync(string email, string password)
+    {
+        var url = $"{_supabaseUrl}/auth/v1/signup";
+
+        var request = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = JsonContent.Create(new { email, password })
         };
 
-        request.Content = new StringContent(
-            JsonSerializer.Serialize(body),
-            Encoding.UTF8,
-            "application/json");
+        request.Headers.Add("apikey", _anonKey);
+        request.Headers.Add("Authorization", $"Bearer {_anonKey}");
 
         var response = await _http.SendAsync(request);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            var error = await response.Content.ReadAsStringAsync();
-            throw new InvalidOperationException($"Error al registrar en Supabase Auth: {error}");
-        }
+        var content = await response.Content.ReadAsStringAsync();
 
-        var json = await response.Content.ReadAsStringAsync();
-        var doc = JsonDocument.Parse(json);
+        Console.WriteLine($"STATUS: {response.StatusCode}");
+        Console.WriteLine($"BODY: {content}");
 
-        // Supabase devuelve el UUID en la propiedad "id"
-        var userId = doc.RootElement.GetProperty("id").GetString();
-        return Guid.Parse(userId!);
+        return response.IsSuccessStatusCode;
     }
 }

@@ -1,96 +1,77 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TasksService.Data;
-using TasksService.Data.Entities;
-using TasksService.Services;
-using TasksService.Models.DTOs;
+using TasksService.Entities;
+using TasksService.Models.DTOs.GranjasDto;
+using TasksService.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace TasksService.Controllers;
 
 [ApiController]
-[Route("api/gallinas/[controller]")]
+[Route("api/[controller]")]
+[Authorize]
 public class GranjasController : ControllerBase
 {
-    private readonly IGranjaService _service;
+    private readonly IGranjaRepository _repo;
 
-    // TEMPORAL: mientras no hay JWT, usamos un userId fijo de prueba
-    // Cuando implementes autenticación reemplaza esto por:
-    // Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
-    private static readonly Guid UsuarioTemporal =
-        Guid.Parse("bb042bda-3c6c-4b7b-b9e6-9b8f9795d847");
+    public GranjasController(IGranjaRepository repo) => _repo = repo;
 
-    public GranjasController(IGranjaService service)
-    {
-        _service = service;
-    }
-
-    // GET api/granjas
-    // Devuelve todas las granjas donde el usuario es miembro
+    /// <summary>Obtiene todas las granjas</summary>
     [HttpGet]
-    public async Task<IActionResult> GetMisGranjas()
+    public async Task<IActionResult> GetAll() =>
+        Ok(await _repo.GetAllAsync());
+
+    /// <summary>Obtiene las granjas del usuario autenticado</summary>
+    [HttpGet("mis-granjas")]
+    public async Task<IActionResult> GetMias()
     {
-        var granjas = await _service.GetByUsuarioAsync(UsuarioTemporal);
-        return Ok(granjas);
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
+                     ?? User.FindFirstValue("sub")!);
+        return Ok(await _repo.GetByOwnerAsync(userId));
     }
 
-    // GET api/granjas/{id}
-    [HttpGet("{id}")]
+    /// <summary>Obtiene una granja por ID</summary>
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var granja = await _service.GetByIdAsync(id);
+        var granja = await _repo.GetByIdAsync(id);
         return granja is null ? NotFound() : Ok(granja);
     }
 
-    // POST api/granjas
+    /// <summary>Crea una nueva granja</summary>
     [HttpPost]
-    public async Task<IActionResult> Crear([FromBody] CrearGranjaDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateGranjaDto dto)
     {
-        try
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)
+                     ?? User.FindFirstValue("sub")!);
+
+        var granja = new Granja
         {
-            var creada = await _service.CrearAsync(dto, UsuarioTemporal);
-            return CreatedAtAction(nameof(GetById), new { id = creada.Id }, creada);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { mensaje = ex.Message });
-        }
+            Id = Guid.NewGuid(),
+            OwnerId = userId,
+            Nombre = dto.Nombre,
+            Descripcion = dto.Descripcion,
+            Ubicacion = dto.Ubicacion,
+            CreatedBy = userId
+        };
+
+        var created = await _repo.CreateAsync(granja);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
-    // PUT api/granjas/{id}
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Actualizar(Guid id, [FromBody] ActualizarGranjaDto dto)
+    /// <summary>Actualiza una granja existente</summary>
+    [HttpPatch("{id:guid}")]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGranjaDto dto)
     {
-        try
-        {
-            var actualizada = await _service.ActualizarAsync(id, dto, UsuarioTemporal);
-            return Ok(actualizada);
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            return Forbid();
-        }
+        var updated = await _repo.UpdateAsync(id, dto);
+        return updated is null ? NotFound() : Ok(updated);
     }
 
-    // DELETE api/granjas/{id}
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Eliminar(Guid id)
+    /// <summary>Elimina una granja</summary>
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        try
-        {
-            await _service.EliminarAsync(id, UsuarioTemporal);
-            return NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+        var ok = await _repo.DeleteAsync(id);
+        return ok ? NoContent() : NotFound();
     }
 }
