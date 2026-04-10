@@ -22,11 +22,13 @@ var jwtSecret        = Environment.GetEnvironmentVariable("SUPABASE_JWT_SECRET")
 var anonKey          = Environment.GetEnvironmentVariable("SUPABASE_ANON_KEY")!;
 
 // ── Repositorios ──────────────────────────────────────────────
-builder.Services.AddScoped<IPerfilRepository, PerfilRepository>();
-builder.Services.AddScoped<IGranjaRepository, GranjaRepository>();
+//builder.Services.AddScoped<IPerfilRepository, PerfilRepository>();
+//builder.Services.AddScoped<IGranjaRepository, GranjaRepository>();
 
 // ── Servicios ─────────────────────────────────────────────────
 builder.Services.AddSingleton(new SupabaseConfig(supabaseUrl, anonKey));
+builder.Services.AddHttpClient<SupabaseRestService>();
+builder.Services.AddHttpClient<PerfilService>();
 builder.Services.AddHttpClient<SupabaseAuthService>();
 
 // ── Controllers ───────────────────────────────────────────────
@@ -36,8 +38,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // ── Base de datos (EF Core + Npgsql → Supabase) ───────────────
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseNpgsql(connectionString));
 
 // ── Autenticación JWT ─────────────────────────────────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
