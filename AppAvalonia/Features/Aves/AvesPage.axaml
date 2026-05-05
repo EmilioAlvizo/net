@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia.ViewModels"
+             x:Class="AppAvalonia.Views.AvesPage"
+             x:DataType="vm:AvesViewModel">
+
+    <Grid>
+        <TextBlock Text="{Binding Titulo}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="24"/>
+        <!-- Bottom Navigation Bar -->
+        <Border Grid.Row="2"
+                Background="#111418"
+                BorderBrush="{StaticResource BorderSubtleBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="8,8,8,28">
+        
+        </Border>
+    </Grid>
+</UserControl>

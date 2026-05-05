@@ -1,0 +1,182 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia.ViewModels"
+             xmlns:models="using:AppAvalonia.Models"
+             xmlns:views="using:AppAvalonia.Views"
+             x:Class="AppAvalonia.Views.GranjasPage"
+             x:DataType="vm:GranjasViewModel"
+             Background="{StaticResource BgDeepBrush}">
+
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <!-- List -->
+        <ScrollViewer Grid.Row="1" Margin="0,0,0,4">
+            <StackPanel Margin="20,0" Spacing="12">
+
+                <!-- Loading state -->
+                <StackPanel IsVisible="{Binding IsLoading}"
+                            HorizontalAlignment="Center"
+                            Margin="0,40,0,0"
+                            Spacing="12">
+                    <TextBlock Text="Cargando granjas..."
+                               Classes="Subtitle"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Granjas list -->
+                <ItemsControl ItemsSource="{Binding Granjas}"
+                              IsVisible="{Binding !IsLoading}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:GranjaCardModel">
+                            <Button Background="Transparent"
+                                    Padding="0"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding $parent[UserControl].DataContext.OpenGranjaCommand}"
+                                    CommandParameter="{Binding}"
+                                    Margin="0,0,0,12"
+                                    Cursor="Hand">
+                                <!-- Granja Card -->
+                                <Border CornerRadius="16"
+                                        ClipToBounds="True"
+                                        Background="{StaticResource BgCardBrush}">
+
+                                    <Grid RowDefinitions="Auto,Auto">
+
+                                        <!-- Cover image area (for featured granja with image) -->
+                                        <Border Grid.Row="0"
+                                                Height="110"
+                                                IsVisible="{Binding HasCoverImage}"
+                                                ClipToBounds="True">
+                                            <!-- Image placeholder - in real app use Bitmap binding -->
+                                            <Border Background="#1A3A1A">
+                                                <TextBlock Text="🌾"
+                                                           FontSize="48"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="0.5"/>
+                                            </Border>
+                                        </Border>
+
+                                        <!-- Card content -->
+                                        <Grid Grid.Row="1" Margin="16,14,16,16">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Title row -->
+                                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+                                                <StackPanel Grid.Column="0" Spacing="2">
+                                                    <TextBlock Text="{Binding Nombre}"
+                                                               Classes="H2"
+                                                               FontSize="17"/>
+                                                    <TextBlock Text="{Binding OwnerEmail}"
+                                                               Classes="Subtitle"
+                                                               FontSize="12"/>
+                                                </StackPanel>
+                                                <!-- Invite button -->
+                                                <Border Grid.Column="1"
+                                                        Background="#1C2A1C"
+                                                        BorderBrush="#2D4A2D"
+                                                        BorderThickness="1"
+                                                        CornerRadius="20"
+                                                        Padding="10,5">
+                                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                                        <TextBlock Text="👤" FontSize="12"/>
+                                                        <TextBlock Text="Invitar"
+                                                                   FontSize="12"
+                                                                   Foreground="{StaticResource AccentGreenDimBrush}"
+                                                                   FontWeight="Medium"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- Divider -->
+                                            <Border Grid.Row="1"
+                                                    Height="1"
+                                                    Background="{StaticResource BorderSubtleBrush}"
+                                                    Margin="0,8,0,12"/>
+
+                                            <!-- Stats row -->
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,*,Auto">
+                                                <!-- Aves -->
+                                                <StackPanel Grid.Column="0" Margin="0,0,20,0" Spacing="2">
+                                                    <TextBlock Text="{Binding TotalAves}"
+                                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                                               FontSize="18"
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Text="Aves"
+                                                               Classes="Muted"
+                                                               FontSize="11"/>
+                                                </StackPanel>
+                                                <!-- Huevos -->
+                                                <StackPanel Grid.Column="1" Margin="0,0,20,0" Spacing="2">
+                                                    <TextBlock Text="{Binding TotalHuevos}"
+                                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                                               FontSize="18"
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Text="Huevos"
+                                                               Classes="Muted"
+                                                               FontSize="11"/>
+                                                </StackPanel>
+                                                <!-- Balance -->
+                                                <StackPanel Grid.Column="2" Spacing="2">
+                                                    <TextBlock Text="{Binding BalanceDisplay}"
+                                                               Foreground="{Binding BalanceBrush}"
+                                                               FontSize="16"
+                                                               FontWeight="Bold"/>
+                                                    <TextBlock Text="Balance"
+                                                               Classes="Muted"
+                                                               FontSize="11"/>
+                                                </StackPanel>
+                                                <!-- Nav arrow -->
+                                                <Border Grid.Column="3"
+                                                        Width="32" Height="32"
+                                                        CornerRadius="8"
+                                                        Background="#1C2128">
+                                                    <TextBlock Text="›"
+                                                               FontSize="18"
+                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Nueva Granja button (dashed) -->
+                <Button Background="Transparent"
+                        HorizontalAlignment="Stretch"
+                        Padding="0"
+                        Margin="0,4,0,16"
+                        Command="{Binding NuevaGranjaCommand}">
+                    <Border CornerRadius="14"
+                            BorderBrush="{StaticResource BorderDashedBrush}"
+                            BorderThickness="2"
+                            Padding="0,18">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Spacing="6">
+                            <TextBlock Text="+"
+                                       FontSize="18"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="Nueva granja"
+                                       FontSize="15"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                </Button>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Bottom Navigation Bar -->
+    </Grid>
+</UserControl>
