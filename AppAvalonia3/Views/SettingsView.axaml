@@ -1,0 +1,11 @@
+<!-- /HomeView.axaml -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AppAvalonia3.ViewModels"
+             x:Class="AppAvalonia3.Views.SettingsView">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Text="¡Bienvenido a la Pantalla de coonfig!" FontSize="20"/>
+    </StackPanel>
+</UserControl>
