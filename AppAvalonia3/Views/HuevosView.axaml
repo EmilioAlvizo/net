@@ -4,8 +4,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:AppAvalonia3.ViewModels"
-             x:Class="AppAvalonia3.Views.SettingsView">
+             x:Class="AppAvalonia3.Views.HuevosView">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="¡Bienvenido a la Pantalla de coonfig!" FontSize="20"/>
+        <TextBlock Text="¡Bienvenido a huevos!" FontSize="20"/>
     </StackPanel>
 </UserControl>

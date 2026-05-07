@@ -13,22 +13,63 @@
 
     <!-- MAPEO: ViewModel -> Vista -->
     <Window.DataTemplates>
+        <DataTemplate DataType="vm:LoginViewModel"><views:LoginView /></DataTemplate>
         <DataTemplate DataType="{x:Type vm:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
-            <views:SettingsView />
+        <DataTemplate DataType="{x:Type vm:HuevosViewModel}">
+            <views:HuevosView />
         </DataTemplate>
     </Window.DataTemplates>
 
-    <Grid RowDefinitions="Auto, *">
-        <!-- FILA 0: Barra de navegación (FIJA) -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#2b2b2b" Spacing="10">
-            <Button Content="Inicio" Command="{Binding ShowHomeCommand}" />
-            <Button Content="Configuración" Command="{Binding ShowSettingsCommand}" />
-        </StackPanel>
+    <Grid RowDefinitions="Auto, *, Auto">
 
-        <!-- FILA 1: Contenido dinámico (PÁGINAS) -->
-        <ContentControl Grid.Row="1" Content="{Binding CurrentView}"/>
+        <!-- 1. CABECERA (FIJA) -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto">
+            <!-- Icono de la App -->
+            <Ellipse Grid.Column="0" Width="35" Height="35" Fill="Gray"/>
+
+            <!-- Título Central -->
+            <TextBlock Grid.Column="1" Text="Granjas"
+                       FontSize="22" FontWeight="Bold"
+                       VerticalAlignment="Center" Margin="15,0"/>
+
+            <!-- Botón Settings -->
+            <Button Grid.Column="2"
+                    Classes="Ghost"
+                    Width="40" Height="40"
+                    Padding="0"
+                    CornerRadius="12"
+                    Background="#1C2128"
+                    >
+                <TextBlock Text="⚙" FontSize="18"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Button>
+        </Grid>
+
+        <!-- 2. CONTENIDO DINÁMICO (Scrollable) -->
+        <ScrollViewer Grid.Row="1">
+            <ContentControl Content="{Binding CurrentView}"/>
+        </ScrollViewer>
+
+        <!-- 3. BARRA DE NAVEGACIÓN INFERIOR (FIJA) -->
+        <Border Grid.Row="2" IsVisible="{Binding IsLoggedIn}" Background="#1a1a1a" CornerRadius="20,20,0,0" Padding="10">
+            <UniformGrid Columns="5">
+                <Button Command="{Binding ShowHomeCommand}" Background="Transparent" HorizontalAlignment="Center">
+                    <TextBlock Text="🏠" FontSize="20"/>
+                </Button>
+                <Button Command="{Binding ShowHuevosCommand}" Background="Transparent" HorizontalAlignment="Center">
+                    <TextBlock Text="🥚" FontSize="20"/>
+                </Button>
+                <!-- Repite para los otros 4 iconos (Gallina, Huevo, Trigo, Gráfica) -->
+                <Button Background="Transparent" HorizontalAlignment="Center">
+                    <PathIcon Data="{StaticResource animal_rabbit_regular}" />
+                </Button>
+                <Button Background="Transparent" HorizontalAlignment="Center">
+                    <PathIcon Data="{StaticResource food_egg_regular}" />
+                </Button>
+            </UniformGrid>
+        </Border>
     </Grid>
 </Window>

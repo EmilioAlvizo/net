@@ -1,0 +1,131 @@
+<!-- Views/LoginView.axaml -->
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia3.ViewModels"
+             x:Class="AppAvalonia3.Views.LoginView"
+             x:DataType="vm:LoginViewModel"
+             Background="{StaticResource BgDeepBrush}">
+
+    <Grid RowDefinitions="*, Auto, *">
+
+        <!-- Top decorative area -->
+        <Canvas Grid.Row="0" ClipToBounds="True">
+            <!-- Subtle green glow top-left -->
+            <Ellipse Canvas.Left="-60" Canvas.Top="-60"
+                     Width="240" Height="240"
+                     Fill="#0A4ADE80" />
+            <!-- Logo area -->
+            <StackPanel Canvas.Left="0" Canvas.Top="0"
+                        Width="390"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        Spacing="8"
+                        Margin="0,60,0,0">
+                <!-- Logo Icon -->
+                <Border Width="72" Height="72"
+                        CornerRadius="20"
+                        Background="#1A2A1A"
+                        BorderBrush="#2D4A2D"
+                        BorderThickness="1"
+                        HorizontalAlignment="Center">
+                    <TextBlock Text="🐓"
+                               FontSize="38"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Border>
+                <TextBlock Text="GallinasApp"
+                           Classes="H1"
+                           HorizontalAlignment="Center"
+                           FontSize="28"/>
+                <TextBlock Text="Gestión inteligente de tu granja"
+                           Classes="Subtitle"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Canvas>
+
+        <!-- Form -->
+        <StackPanel Grid.Row="1"
+                    Margin="28,0"
+                    Spacing="0">
+
+            <!-- Email -->
+            <TextBlock Text="Correo electrónico"
+                       Classes="Muted"
+                       Margin="4,0,0,6"/>
+            <TextBox Classes="DarkInput"
+                     PlaceholderText="tu@correo.com"
+                     Text="{Binding Email}"
+                     Margin="0,0,0,16"/>
+
+            <!-- Password -->
+            <TextBlock Text="Contraseña"
+                       Classes="Muted"
+                       Margin="4,0,0,6"/>
+            <TextBox Classes="DarkInput"
+                     PlaceholderText="••••••••"
+                     PasswordChar="•"
+                     Text="{Binding Password}"
+                     Margin="0,0,0,8"/>
+
+            <!-- Forgot password -->
+            <Button Classes="Ghost"
+                    Content="¿Olvidaste tu contraseña?"
+                    HorizontalAlignment="Right"
+                    Margin="0,0,0,24"
+                    Command="{Binding ForgotPasswordCommand}"/>
+
+            <!-- Error message -->
+            <Border Background="#2D1515"
+                    BorderBrush="#7F1D1D"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="12,10"
+                    Margin="0,0,0,16"
+                    IsVisible="{Binding HasError}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock Text="⚠" Foreground="#F87171" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding ErrorMessage}"
+                               Foreground="#FCA5A5"
+                               FontSize="13"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Login button -->
+            <Button Classes="Primary"
+                    Content="Iniciar sesión"
+                    HorizontalAlignment="Stretch"
+                    Command="{Binding LoginCommand}"
+                    IsEnabled="{Binding IsNotLoading}">
+            </Button>
+
+            <!-- Loading indicator -->
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Spacing="8"
+                        Margin="0,16,0,0"
+                        IsVisible="{Binding IsLoading}">
+                <TextBlock Text="Iniciando sesión..."
+                           Classes="Subtitle"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Bottom area -->
+        <StackPanel Grid.Row="2"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,40"
+                    Orientation="Horizontal"
+                    Spacing="4">
+            <TextBlock Text="¿No tienes cuenta?"
+                       Classes="Subtitle"
+                       VerticalAlignment="Center"/>
+            <Button Classes="Ghost"
+                    Content="Regístrate"
+                    Foreground="{StaticResource AccentGreenBrush}"
+                    Command="{Binding RegisterCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

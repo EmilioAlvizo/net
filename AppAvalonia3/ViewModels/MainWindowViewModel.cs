@@ -9,10 +9,26 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private object? _currentView;
 
+    [ObservableProperty]
+    private bool _isLoggedIn;
+
+    public void ShowLogin()
+    {
+        IsLoggedIn = false;
+        CurrentView = new LoginViewModel(this); // Pasamos 'this' para que el login nos avise al terminar
+    }
+
     public MainWindowViewModel()
     {
         // Página inicial por defecto
         CurrentView = new HomeViewModel();
+    }
+
+    // Este método lo llamará el LoginViewModel cuando el usuario sea válido
+    public void FinishLogin()
+    {
+        IsLoggedIn = true;
+        ShowHome();
     }
 
     // Comandos para cambiar de página
@@ -20,5 +36,5 @@ public partial class MainWindowViewModel : ObservableObject
     public void ShowHome() => CurrentView = new HomeViewModel();
 
     [RelayCommand]
-    public void ShowSettings() => CurrentView = new SettingsViewModel();
+    public void ShowHuevos() => CurrentView = new HuevosViewModel();
 }
