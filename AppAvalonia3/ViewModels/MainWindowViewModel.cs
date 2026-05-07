@@ -12,7 +12,7 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoggedIn;
 
-    public void ShowLogin()
+    /* public void ShowLogin()
     {
         IsLoggedIn = false;
         CurrentView = new LoginViewModel(this); // Pasamos 'this' para que el login nos avise al terminar
@@ -29,7 +29,7 @@ public partial class MainWindowViewModel : ObservableObject
     {
         IsLoggedIn = true;
         ShowHome();
-    }
+    } */
 
     // Comandos para cambiar de página
     [RelayCommand]
