@@ -3,12 +3,12 @@
              x:Class="AppAvalonia3.App"
              xmlns:local="using:AppAvalonia3"
              RequestedThemeVariant="Dark">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
+
     <Application.Resources>
         <!-- Color Palette -->
         <Color x:Key="BgDeep">#0D0F12</Color>
@@ -37,7 +37,7 @@
         <SolidColorBrush x:Key="BorderSubtleBrush" Color="{StaticResource BorderSubtle}"/>
         <SolidColorBrush x:Key="BorderDashedBrush" Color="{StaticResource BorderDashed}"/>
 
-        
+
     </Application.Resources>
 
     <Application.Styles>
@@ -77,7 +77,7 @@
             <Setter Property="BorderBrush" Value="{StaticResource AccentGreenDimBrush}"/>
         </Style>
 
-        <!-- Primary Button -->
+        <!-- Estilos de Botones -->
         <Style Selector="Button.Primary">
             <Setter Property="Background" Value="{StaticResource AccentGreenDimBrush}"/>
             <Setter Property="Foreground" Value="#0D0F12"/>
@@ -91,11 +91,7 @@
         <Style Selector="Button.Primary:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{StaticResource AccentGreenBrush}"/>
         </Style>
-        <Style Selector="Button.Primary:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="#16A34A"/>
-        </Style>
 
-        <!-- Ghost Button -->
         <Style Selector="Button.Ghost">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
@@ -104,8 +100,44 @@
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
         <Style Selector="Button.Ghost:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="TextElement.Foreground" Value="{StaticResource AccentGreenBrush}"/>
+            <!-- Quitamos el #00 inicial para que sea opaco, o usamos tu Brush -->
+            <Setter Property="Background" Value="{StaticResource AccentGreenDimBrush}"/>
+            <Setter Property="TextElement.Foreground" Value="White"/>
         </Style>
+        <!-- Nuevo estilo para los botones de la barra de navegación -->
+        <Style Selector="Button.NavButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+        <Style Selector="Button.NavButton:selected">
+            <Setter Property="Background" Value="#2D3748"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- boton obscuro -->
+        <Style Selector="Button.Obscuro">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.Obscuro Rectangle#BordeDiscontinuo">
+            <Setter Property="Stroke" Value="#555555" />
+        </Style>
+        <Style Selector="Button.Obscuro:pointerover Rectangle#BordeDiscontinuo">
+            <!-- Quitamos el #00 inicial para que sea opaco, o usamos tu Brush -->
+            <Setter Property="Stroke" Value="{StaticResource AccentOrange}" />
+        </Style>
+        <Style Selector="Button.Obscuro:pointerover TextBlock">
+            <!-- Quitamos el #00 inicial para que sea opaco, o usamos tu Brush -->
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+        <Style Selector="Button.Obscuro:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
     </Application.Styles>
 </Application>

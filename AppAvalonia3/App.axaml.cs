@@ -25,16 +25,20 @@ public partial class App : Application
 
         // 1. Registrar Configuración y HttpClient
         services.AddSingleton(new SupabaseConfig("https://xagnnkqqtdtvadaseubc.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhZ25ua3FxdGR0dmFkYXNldWJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MjYzMjEsImV4cCI6MjA5MDQwMjMyMX0.m8V3r4GTutaqvj0agfZig__Itxmtw5m2BKtPjoXpeXA"));
+        services.AddSingleton<ISessionContext, SessionContext>();
         services.AddHttpClient<IAuthService, SupabaseAuthService>();
 
         // 2. Registrar Navegación
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IFarmService, SupabaseFarmService>();
 
         // 3. Registrar ViewModels
         services.AddSingleton<MainWindowViewModel>();
         services.AddTransient<LoginViewModel>(); // Transient = se crea uno nuevo cada vez
         services.AddTransient<HomeViewModel>();
         services.AddTransient<HuevosViewModel>();
+        services.AddTransient<AddFarmViewModel>();
+        services.AddTransient<CollaboratorsViewModel>();
 
         var serviceProvider = services.BuildServiceProvider();
 

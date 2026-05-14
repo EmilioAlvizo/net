@@ -5,7 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="using:AppAvalonia3.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" Width="360" Height="800"
         x:Class="AppAvalonia3.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -19,6 +19,12 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:HuevosViewModel}">
             <views:HuevosView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AddFarmViewModel}">
+            <views:AddFarmView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CollaboratorsViewModel}">
+            <views:CollaboratorsView />
         </DataTemplate>
     </Window.DataTemplates>
 
@@ -59,12 +65,13 @@
                 <Button Command="{Binding ShowHomeCommand}" Classes="Ghost" HorizontalAlignment="Center">
                     <TextBlock Text="🏠" FontSize="20"/>
                 </Button>
-                <Button Command="{Binding ShowHuevosCommand}" Background="Transparent" HorizontalAlignment="Center">
+                <Button Grid.Column="2" Classes="Ghost" Command="{Binding ShowHuevosCommand}" Background="#00992020" HorizontalAlignment="Center">
                     <TextBlock Text="🥚" FontSize="20"/>
                 </Button>
                 <!-- Repite para los otros 4 iconos (Gallina, Huevo, Trigo, Gráfica) -->
-                <Button Background="Transparent" HorizontalAlignment="Center">
-                    <PathIcon Data="{StaticResource animal_rabbit_regular}" />
+                <Button Grid.Column="3" Classes="Ghost" HorizontalAlignment="Center"
+                        >
+                    <TextBlock Text="🌽" FontSize="22"/>
                 </Button>
                 <Button Background="Transparent" HorizontalAlignment="Center">
                     <PathIcon Data="{StaticResource food_egg_regular}" />

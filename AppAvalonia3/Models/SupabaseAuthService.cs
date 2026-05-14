@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace AppAvalonia3.Services;
 
@@ -19,13 +20,15 @@ public class SupabaseAuthService : IAuthService
 {
     private readonly HttpClient _http;
     private readonly SupabaseConfig _config;
-    private string? _accessToken;
-    private string? _userId;
+    // 1. Eliminamos las variables locales string? _accessToken y _userId
+    private readonly ISessionContext _session; // 👈 NUEVA VARIABLE GLOBAL
 
-    public SupabaseAuthService(HttpClient http, SupabaseConfig config)
+    // 2. Modificamos el constructor para recibir el contexto de sesión
+    public SupabaseAuthService(HttpClient http, SupabaseConfig config, ISessionContext session)
     {
         _http = http;
         _config = config;
+        _session = session; // 👈 ASIGNACIÓN
     }
 
     public async Task<LoginResult> LoginAsync(string email, string password)
@@ -45,22 +48,34 @@ public class SupabaseAuthService : IAuthService
         }
 
         var result = await response.Content.ReadFromJsonAsync<SupabaseAuthResponse>();
-        _accessToken = result?.AccessToken;
-        _userId = result?.User?.Id;
+        
+        // 3. 💾 GUARDAR DIRECTAMENTE EN EL SINGLETON DE SESIÓN
+        _session.Token = result?.AccessToken;
+        _session.UserId = result?.User?.Id;
 
-        return new LoginResult(true, _accessToken, _userId, null);
+        return new LoginResult(true, _session.Token, _session.UserId, null);
     }
 
-    public void Logout()
-    {
-        _accessToken = null;
-        _userId = null;
-    }
+    // 4. Limpiamos el contenedor global al cerrar sesión
+    public void Logout() => _session.Clear();
 
-    public string? GetToken() => _accessToken;
-    public string? GetUserId() => _userId;
+    // 5. Retornamos los valores directamente desde el Singleton de sesión
+    public string? GetToken() => _session.Token;
+    public string? GetUserId() => _session.UserId;
 
-    private record SupabaseAuthResponse(string AccessToken, string TokenType, SupabaseUser? User);
-    private record SupabaseUser(string Id, string Email);
-    private record SupabaseAuthError(string Error, string ErrorDescription);
+    private record SupabaseAuthResponse(
+    [property: JsonPropertyName("access_token")] string AccessToken, // 👈 CORRECCIÓN
+    [property: JsonPropertyName("token_type")] string TokenType,
+    [property: JsonPropertyName("user")] SupabaseUser? User
+);
+
+private record SupabaseUser(
+    [property: JsonPropertyName("id")] string Id,
+    [property: JsonPropertyName("email")] string Email
+);
+
+private record SupabaseAuthError(
+    [property: JsonPropertyName("error")] string Error,
+    [property: JsonPropertyName("error_description")] string ErrorDescription
+);
 }

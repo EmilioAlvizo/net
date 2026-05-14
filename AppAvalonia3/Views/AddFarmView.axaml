@@ -1,0 +1,95 @@
+<!-- Views/AddFarmView.axaml -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia3.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+             x:Class="AppAvalonia3.Views.AddFarmView"
+             x:DataType="vm:AddFarmViewModel"
+             Background="{DynamicResource BgDeepBrush}">
+
+    <UserControl.Styles>
+        <Style Selector="TextBox.FormInput">
+            <Setter Property="Background" Value="#1C2128"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="14"/>
+            <Setter Property="FontSize" Value="15"/>
+        </Style>
+        <Style Selector="TextBox.FormInput:focus /template/ Border#PART_BorderElement">
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentGreenBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.FormLabel">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+        <Style Selector="TextBlock.Opcional">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
+
+        <!-- Cabecera del Formulario -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="0,0,0,30">
+            <Button Command="{Binding BackCommand}"
+                    Background="#1C2128"
+                    Width="40" Height="40"
+                    CornerRadius="20">
+                <TextBlock Text="←" FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Button>
+            <StackPanel Grid.Column="1" Margin="15,0,0,0" VerticalAlignment="Center">
+                <TextBlock Text="Nueva granja" Classes="H1"/>
+                <TextBlock Text="Crea una granja para empezar a registrar" Classes="Subtitle"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Contenido del Formulario (Scrollable) -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="20">
+                <!-- Nombre de la granja -->
+                <StackPanel>
+                    <TextBlock Text="Nombre de la granja" Classes="FormLabel"/>
+                    <TextBox Classes="FormInput" PlaceholderText="Ej. Mi Granja" Text="{Binding FarmName}"/>
+                </StackPanel>
+
+                <!-- Ubicación -->
+                <StackPanel>
+                    <TextBlock Text="Ubicación" Classes="FormLabel"/>
+                    <TextBox Classes="FormInput" PlaceholderText="Ej. Rancho La Loma" Text="{Binding Location}"/>
+                    <TextBlock Text="Opcional" Classes="Opcional"/>
+                </StackPanel>
+
+                <!-- Notas -->
+                <StackPanel>
+                    <TextBlock Text="Notas" Classes="FormLabel"/>
+                    <TextBox Classes="FormInput"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             Height="120"
+                             PlaceholderText="Cualquier detalle que quieras recordar"
+                             Text="{Binding Notes}"/>
+                    <TextBlock Text="Opcional" Classes="Opcional"/>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Botón de Crear Granja - Se usa AccentOrangeBrush -->
+        <Button Grid.Row="2"
+                HorizontalAlignment="Stretch"
+                Content="Crear granja"
+                Classes="Primary"
+                Background="{DynamicResource AccentOrangeBrush}"
+                Command="{Binding CreateFarmCommand}"
+                Margin="0,30,0,0"
+                CornerRadius="15"
+                Padding="0,16"/>
+    </Grid>
+</UserControl>

@@ -1,11 +1,87 @@
-<!-- /HomeView.axaml -->
+<!-- Views/HomeView.axaml -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia3.ViewModels"
+             xmlns:models="using:AppAvalonia3.Models"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:AppAvalonia3.ViewModels"
-             x:Class="AppAvalonia3.Views.HomeView">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="¡Bienvenido a la Pantalla de Inicio!" FontSize="20"/>
-    </StackPanel>
+             xmlns:viewmodels="using:AppAvalonia3.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+             x:Class="AppAvalonia3.Views.HomeView"
+             x:DataType="vm:HomeViewModel"
+             Background="{DynamicResource BgDeepBrush}"
+             Name="RootControl">
+
+    <RefreshContainer PullDirection="TopToBottom" RefreshRequested="OnRefreshRequested">
+
+        <ScrollViewer Margin="20">
+            <StackPanel Spacing="15">
+
+                <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,10">
+                    <TextBlock Text="Granjas" Classes="H2" Margin="0,0,0,10"/>
+                    <Button Grid.Column="1"
+                            Command="{Binding ForceRefreshFarmsCommand}"
+                            IsVisible="{Binding IsDesktop}"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="🔄" FontSize="18"/>
+                    </Button>
+                </Grid>
+
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" Height="2" Margin="0,0,0,10"/>
+
+                <ItemsControl ItemsSource="{Binding Farms}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:Farm"> <Border Background="{DynamicResource BgCardBrush}" CornerRadius="15" Margin="0,0,0,15" Padding="15">
+                            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto, Auto">
+
+                                <TextBlock Text="{Binding Nombre}" Classes="H3" Foreground="White"/>
+                                <TextBlock Grid.Row="1" Text="{Binding Ubicacion}" Classes="Subtitle"/>
+
+                                <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                                        Content="Invitar" Classes="Ghost"
+                                        Background="#1C2128" CornerRadius="10"
+                                        VerticalAlignment="Center" Margin="10,0,0,0"
+                                        Command="{Binding DataContext.GoToCollaboratorsCommand, ElementName=RootControl}"
+                                        CommandParameter="{Binding}"/>
+
+                                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0,15,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="8" Classes="H2" Foreground="White"/>
+                                        <TextBlock Text="Aves" Classes="Muted"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="3666" Classes="H2" Foreground="White"/>
+                                        <TextBlock Text="Huevos" Classes="Muted"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <TextBlock Text="-720 $" Classes="H2" Foreground="{DynamicResource AccentRedBrush}"/>
+                                        <TextBlock Text="Balance" Classes="Muted"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Button Grid.Column="1" Grid.Row="2" Width="30" Height="30" CornerRadius="15" Background="Transparent" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,15,-10,0">
+                                    <TextBlock Text="⌂" FontSize="20"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button Command="{Binding GoToAddFarmCommand}" Classes="Obscuro" HorizontalAlignment="Stretch" Background="Transparent" CornerRadius="15">
+                    <Grid Height="60">
+                        <Rectangle Name="BordeDiscontinuo" StrokeThickness="1.5" StrokeDashArray="4, 4" RadiusX="30" RadiusY="30" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+                            <TextBlock Text="+" FontSize="18" FontWeight="Medium"/>
+                            <TextBlock Text="Nueva granja" FontSize="14" FontWeight="Medium"/>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+
+            </StackPanel>
+        </ScrollViewer>
+    </RefreshContainer>
+
 </UserControl>

@@ -1,4 +1,4 @@
 <Solution>
   <Project Path="Gallinas/Gallinas.csproj" />
-  <Project Path="TasksService/TasksService.csproj" />
+  <Project Path="AppAvalonia3/AppAvalonia3.csproj" />
 </Solution>

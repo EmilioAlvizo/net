@@ -1,40 +1,48 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel; // O ReactiveUI
+﻿// ViewModel/MainWindowViewModel.cs
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using AppAvalonia3.Services; // Asegúrate de incluir el namespace de tus servicios
+using System.Threading.Tasks;
 
 namespace AppAvalonia3.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    // Propiedad que se enlaza al ContentControl
+    private readonly INavigationService _navigationService;
+
     [ObservableProperty]
     private object? _currentView;
 
     [ObservableProperty]
     private bool _isLoggedIn;
 
-    /* public void ShowLogin()
+    // 1. Inyectamos el servicio de navegación en el constructor
+    public MainWindowViewModel(INavigationService navigationService)
     {
-        IsLoggedIn = false;
-        CurrentView = new LoginViewModel(this); // Pasamos 'this' para que el login nos avise al terminar
+        _navigationService = navigationService;
+
+        // 2. IMPORTANTE: El servicio de navegación necesita referencia a este ViewModel
+        // para poder cambiar la propiedad 'CurrentView'.
+        _navigationService.SetMainViewModel(this);
     }
 
-    public MainWindowViewModel()
+    // 3. Usamos el servicio en lugar de crear la instancia con 'new'
+    [RelayCommand]
+    public async Task ShowHome()
     {
-        // Página inicial por defecto
-        CurrentView = new HomeViewModel();
+        await _navigationService.NavigateToAsync<HomeViewModel>();
     }
 
-    // Este método lo llamará el LoginViewModel cuando el usuario sea válido
-    public void FinishLogin()
+    [RelayCommand]
+    public async Task ShowHuevos()
+    {
+        await _navigationService.NavigateToAsync<HuevosViewModel>();
+    }
+
+    // Si necesitas una función para terminar el login (como tenías en comentarios)
+    public async Task FinishLogin()
     {
         IsLoggedIn = true;
-        ShowHome();
-    } */
-
-    // Comandos para cambiar de página
-    [RelayCommand]
-    public void ShowHome() => CurrentView = new HomeViewModel();
-
-    [RelayCommand]
-    public void ShowHuevos() => CurrentView = new HuevosViewModel();
+        await ShowHome();
+    }
 }

@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia3.ViewModels"
+             xmlns:models="using:AppAvalonia3.Models"
+             xmlns:viewmodels="using:AppAvalonia3.ViewModels"
+             x:Class="AppAvalonia3.Views.CollaboratorsView"
+             x:DataType="vm:CollaboratorsViewModel"
+             Background="{StaticResource BgDeepBrush}">
+
+    <Grid RowDefinitions="Auto, Auto, *">
+        <StackPanel Grid.Row="0" Margin="20,40,20,10">
+            <Grid ColumnDefinitions="Auto, *, Auto">
+                <Button Command="{Binding BackCommand}" Background="Transparent" Padding="10">
+                    <TextBlock Text="←" FontSize="24" Foreground="White"/>
+                </Button>
+                <TextBlock Grid.Column="1" Text="Colaboradores" Classes="H1" 
+                           VerticalAlignment="Center" Margin="10,0,0,0"/>
+                <Button Grid.Column="2" Background="Transparent">
+                    <TextBlock Text="⚙" FontSize="20" Foreground="Gray"/>
+                </Button>
+            </Grid>
+            <TextBlock Text="Invita a personas a ver o administrar tu granja." 
+                       Classes="Subtitle" Margin="0,15,0,0"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="#1A1C14" CornerRadius="15" Margin="20,10" Padding="15">
+            <StackPanel Orientation="Horizontal" Spacing="15">
+                <TextBlock Text="🛡" FontSize="24" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Roles disponibles" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Admin puede crear y editar todo. Visor sólo puede ver." 
+                               Classes="Muted" TextWrapping="Wrap" MaxWidth="250"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" Margin="20,0">
+            <ItemsControl ItemsSource="{Binding Members}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:MiembroGranja">
+                        <Border Background="{StaticResource BgCardBrush}" CornerRadius="15" 
+                                Margin="0,0,0,10" Padding="15">
+                            <Grid ColumnDefinitions="Auto, *, Auto">
+                                <Border Width="45" Height="45" CornerRadius="22" Background="#2A2D24">
+                                    <TextBlock Text="{Binding Perfil.Nombre[0]}" 
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                               FontWeight="Bold"/>
+                                </Border>
+
+                                <StackPanel Grid.Column="1" Margin="15,0">
+                                    <TextBlock Text="{Binding Perfil.Nombre}" FontWeight="Bold" Foreground="White"/>
+                                    <TextBlock Text="colaborador@correo.com" Classes="Muted" FontSize="12"/>
+                                </StackPanel>
+
+                                <Border Grid.Column="2" Padding="10,4" CornerRadius="12" 
+                                        Background="#2A2D24" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="5">
+                                        <Ellipse Width="6" Height="6" Fill="#A4DE80" IsVisible="{Binding Rol, Converter={StaticResource RoleToColorConverter}}"/>
+                                        <TextBlock Text="{Binding Rol}" FontSize="11" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Button Grid.Row="2" Width="60" Height="60" CornerRadius="30" 
+                Background="#A4DE80" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                Margin="0,0,20,30">
+            <TextBlock Text="+" FontSize="30" Foreground="#1A1C14" 
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Button>
+    </Grid>
+</UserControl>
