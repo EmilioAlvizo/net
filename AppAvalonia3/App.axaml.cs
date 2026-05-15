@@ -23,6 +23,21 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
+        // 1. Configuración de Supabase
+        string url = "https://xagnnkqqtdtvadaseubc.supabase.co";
+        string key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhZ25ua3FxdGR0dmFkYXNldWJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MjYzMjEsImV4cCI6MjA5MDQwMjMyMX0.m8V3r4GTutaqvj0agfZig__Itxmtw5m2BKtPjoXpeXA"; // Tu key completa
+
+        // 2. Registrar el Cliente de Supabase Oficial
+        // Lo registramos como Singleton para que toda la app use la misma sesión
+        var supabaseOptions = new Supabase.SupabaseOptions
+        {
+            AutoRefreshToken = true,
+            AutoConnectRealtime = true
+        };
+
+        var supabaseClient = new Supabase.Client(url, key, supabaseOptions);
+        services.AddSingleton(supabaseClient);
+
         // 1. Registrar Configuración y HttpClient
         services.AddSingleton(new SupabaseConfig("https://xagnnkqqtdtvadaseubc.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhhZ25ua3FxdGR0dmFkYXNldWJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MjYzMjEsImV4cCI6MjA5MDQwMjMyMX0.m8V3r4GTutaqvj0agfZig__Itxmtw5m2BKtPjoXpeXA"));
         services.AddSingleton<ISessionContext, SessionContext>();

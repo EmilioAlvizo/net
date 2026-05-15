@@ -33,39 +33,48 @@
 
                 <ItemsControl ItemsSource="{Binding Farms}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="models:Farm"> <Border Background="{DynamicResource BgCardBrush}" CornerRadius="15" Margin="0,0,0,15" Padding="15">
-                            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto, Auto">
+                        <DataTemplate x:DataType="models:Farm">
+                            <Border Background="{DynamicResource BgCardBrush}" CornerRadius="15" Margin="0,0,0,15" Padding="15">
+                                <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto, Auto">
 
-                                <TextBlock Text="{Binding Nombre}" Classes="H3" Foreground="White"/>
-                                <TextBlock Grid.Row="1" Text="{Binding Ubicacion}" Classes="Subtitle"/>
+                                    <TextBlock Text="{Binding Nombre}" Classes="H3" Foreground="White"/>
 
-                                <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
-                                        Content="Invitar" Classes="Ghost"
-                                        Background="#1C2128" CornerRadius="10"
-                                        VerticalAlignment="Center" Margin="10,0,0,0"
-                                        Command="{Binding DataContext.GoToCollaboratorsCommand, ElementName=RootControl}"
-                                        CommandParameter="{Binding}"/>
+                                    <StackPanel Grid.Row="1" Margin="0,2,0,0">
+                                        <TextBlock Text="{Binding Ubicacion}" Classes="Subtitle"/>
+                                        <!-- <TextBlock Text="{Binding OwnerPerfil.Nombre, StringFormat='{}👤 Creado por: {0}'}"
+                                                   Classes="Muted"
+                                                   FontSize="12"
+                                                   Margin="0,4,0,0"
+                                                   IsVisible="{Binding OwnerPerfil, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                     --></StackPanel>
 
-                                <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0,15,0,0">
-                                    <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <TextBlock Text="8" Classes="H2" Foreground="White"/>
-                                        <TextBlock Text="Aves" Classes="Muted"/>
+                                    <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                                            Content="Invitar" Classes="Ghost"
+                                            Background="#1C2128" CornerRadius="10"
+                                            VerticalAlignment="Center" Margin="10,0,0,0"
+                                            Command="{Binding DataContext.GoToCollaboratorsCommand, ElementName=RootControl}"
+                                            CommandParameter="{Binding}"/>
+
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="20" Margin="0,15,0,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="8" Classes="H2" Foreground="White"/>
+                                            <TextBlock Text="Aves" Classes="Muted"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="3666" Classes="H2" Foreground="White"/>
+                                            <TextBlock Text="Huevos" Classes="Muted"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="-720 $" Classes="H2" Foreground="{DynamicResource AccentRedBrush}"/>
+                                            <TextBlock Text="Balance" Classes="Muted"/>
+                                        </StackPanel>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <TextBlock Text="3666" Classes="H2" Foreground="White"/>
-                                        <TextBlock Text="Huevos" Classes="Muted"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Spacing="5">
-                                        <TextBlock Text="-720 $" Classes="H2" Foreground="{DynamicResource AccentRedBrush}"/>
-                                        <TextBlock Text="Balance" Classes="Muted"/>
-                                    </StackPanel>
-                                </StackPanel>
 
-                                <Button Grid.Column="1" Grid.Row="2" Width="30" Height="30" CornerRadius="15" Background="Transparent" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,15,-10,0">
-                                    <TextBlock Text="⌂" FontSize="20"/>
-                                </Button>
-                            </Grid>
-                        </Border>
+                                    <Button Grid.Column="1" Grid.Row="2" Width="30" Height="30" CornerRadius="15" Background="Transparent" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,15,-10,0">
+                                        <TextBlock Text="⌂" FontSize="20"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

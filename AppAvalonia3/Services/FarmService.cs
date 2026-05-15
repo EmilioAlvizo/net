@@ -6,6 +6,8 @@ using System.Net.Http.Headers; // 👈 Obligatorio para AuthenticationHeaderValu
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using AppAvalonia3.Models;
+using Supabase.Postgrest.Exceptions;
+using Supabase;
 
 namespace AppAvalonia3.Services;
 
@@ -17,98 +19,67 @@ public interface IFarmService
 
 public class SupabaseFarmService : IFarmService
 {
-    private readonly HttpClient _http;
-    private readonly SupabaseConfig _config;
-    private readonly IAuthService _auth;
-
-    // Guardamos las granjas en memoria aquí dentro
+    private readonly Client _supabase;
     private List<Farm>? _cachedFarms;
 
-    public SupabaseFarmService(HttpClient http, SupabaseConfig config, IAuthService auth)
+    public SupabaseFarmService(Client supabase)
     {
-        _http = http;
-        _config = config;
-        _auth = auth;
+        _supabase = supabase;
+    }
+
+    public async Task<List<Farm>> GetUserFarmsAsync(bool forceRefresh = false)
+    {
+        if (_cachedFarms != null && !forceRefresh) return _cachedFarms;
+
+        try
+        {
+            // Sintaxis ultra-específica:
+            // 1. Traemos todo de la granja (*)
+            // 2. Traemos el perfil usando el alias 'OwnerPerfil'
+            // 3. Especificamos la FK con '!' y pedimos solo el 'nombre'
+            var result = await _supabase.From<Farm>()
+                .Select("nombre,ubicacion")
+                .Get();
+
+            var result2 = await _supabase.From<Farm>()
+                .Select("*")
+                .Get();
+
+            var user = _supabase.Auth.CurrentUser;
+
+            Console.WriteLine(user?.Id);
+
+            _cachedFarms = result.Models;
+            return _cachedFarms;
+        }
+        catch (PostgrestException ex)
+        {
+            // Esto te ayudará a ver en la consola si el error cambió de código o mensaje
+            System.Diagnostics.Debug.WriteLine($"Error de Supabase: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<bool> CreateFarmAsync(string name, string location, string notes)
     {
-        var userId = _auth.GetUserId();
-        var token = _auth.GetToken();
+        var userId = _supabase.Auth.CurrentUser?.Id;
+        if (userId == null) return false;
 
-        // 🛡️ Validación: Detener la operación si no hay sesión activa
-        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userId))
+        var nuevaGranja = new Farm
         {
-            return false;
-        }
+            Nombre = name,
+            Ubicacion = location,
+            OwnerId = userId
+        };
 
-        var url = $"{_config.Url}/rest/v1/granjas";
+        var result = await _supabase.From<Farm>().Insert(nuevaGranja);
 
-        var request = new HttpRequestMessage(HttpMethod.Post, url);
+        if (result.ResponseMessage.IsSuccessStatusCode)
+            _cachedFarms = null;
 
-        // Cabeceras estándar de Supabase
-        request.Headers.Add("apikey", _config.AnonKey);
-        request.Headers.Add("Prefer", "return=minimal");
-
-        // 🛠️ Corrección de la cabecera Authorization
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        // Mapeo exacto a las columnas de la tabla 'granjas'
-        request.Content = JsonContent.Create(new
-        {
-            nombre = name,
-            ubicacion = location,
-            descripcion = notes,
-            owner_id = userId,
-            created_by = userId
-        });
-
-        var response = await _http.SendAsync(request);
-        _cachedFarms = null; //limpiamos cache
-
-        return response.IsSuccessStatusCode;
+        return result.ResponseMessage.IsSuccessStatusCode;
     }
 
-    // Agregamos un parámetro opcional 'forceRefresh' por si quieren actualizar tirando hacia abajo (pull-to-refresh)
-    public async Task<List<Farm>> GetUserFarmsAsync(bool forceRefresh = false)
-    {
-        // Si YA tenemos los datos guardados y NO se exige refrescar, los devolvemos sin llamar a la BD
-        if (_cachedFarms != null && !forceRefresh)
-        {
-            return _cachedFarms;
-        }
-
-        var token = _auth.GetToken();
-        var userId = _auth.GetUserId();
-
-        // Si no está autenticado, devolvemos una lista vacía
-        if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userId))
-            return new List<Farm>();
-
-        // Endpoint de PostgREST para filtrar por el owner_id del usuario actual
-        var url = $"{_config.Url}/rest/v1/granjas?owner_id=eq.{userId}&select=*";
-
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-
-        // Cabeceras obligatorias requeridas por la API de Supabase
-        request.Headers.Add("apikey", _config.AnonKey);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        var response = await _http.SendAsync(request);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            // Aquí podrías loguear el error si lo deseas
-            return _cachedFarms ?? new List<Farm>();
-        }
-
-        var farms = await response.Content.ReadFromJsonAsync<List<Farm>>();
-        
-        // Guardamos el resultado en la caché antes de devolverlo
-        _cachedFarms = farms ?? new List<Farm>();
-        
-        return _cachedFarms;
-    }
 
     // Método vital: Si el usuario cierra sesión, hay que borrar la caché
     public void ClearCache()
