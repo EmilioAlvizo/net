@@ -1,3 +1,4 @@
+// SessionContext.cs
 namespace AppAvalonia3.Services;
 
 public interface ISessionContext

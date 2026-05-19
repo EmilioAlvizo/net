@@ -57,11 +57,7 @@ public class Farm : BaseModel
     [Column("created_by")]
     public string CreatedBy { get; set; }
 
-    // RELACIÓN: Esto le dice al SDK que "OwnerPerfil" se llena con la tabla perfiles
-    /* [Reference(typeof(Perfil), foreignKey: "granja_owner_id_fkey")]
+    // 👇 ESTA PARTE FALTA
+    [Reference(typeof(Perfil))]
     public Perfil? OwnerPerfil { get; set; }
-
-    // SI TIENES ESTA PROPIEDAD, TAMBIÉN DEBE LLEVAR SU FK
-    [Reference(typeof(Perfil), foreignKey: "granja_created_by_fkey")]
-    public Perfil? CreatorPerfil { get; set; } */
 }

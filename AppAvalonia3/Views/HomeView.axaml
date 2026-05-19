@@ -41,12 +41,12 @@
 
                                     <StackPanel Grid.Row="1" Margin="0,2,0,0">
                                         <TextBlock Text="{Binding Ubicacion}" Classes="Subtitle"/>
-                                        <!-- <TextBlock Text="{Binding OwnerPerfil.Nombre, StringFormat='{}👤 Creado por: {0}'}"
+                                        <TextBlock Text="{Binding OwnerPerfil.Nombre, StringFormat='{}👤 Creado por: {0}'}"
                                                    Classes="Muted"
                                                    FontSize="12"
                                                    Margin="0,4,0,0"
                                                    IsVisible="{Binding OwnerPerfil, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                                     --></StackPanel>
+                                    </StackPanel>
 
                                     <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
                                             Content="Invitar" Classes="Ghost"
