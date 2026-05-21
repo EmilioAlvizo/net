@@ -35,6 +35,9 @@ public class SupabaseFarmService : IFarmService
                 .Select("*,perfiles:owner_id(nombre)")
                 .Get(); */
 
+        /* var result00 = await _supabase.From<Farm>()
+                .Get();
+
         var result0 = await _supabase.From<Farm>()
                 .Select("*,perfiles:owner_id(nombre)")
                 .Get();
@@ -53,7 +56,7 @@ public class SupabaseFarmService : IFarmService
 
         var result5 = await _supabase.From<Farm>()
             .Select("id, nombre, ubicacion, owner_id, created_by, OwnerPerfil:perfiles!granja_owner_id_fkey(id, nombre)")
-            .Get();
+            .Get(); */
 
         try
         {
@@ -66,8 +69,11 @@ public class SupabaseFarmService : IFarmService
             // 2. Traemos el perfil usando el alias 'OwnerPerfil'
             // 3. Especificamos la FK con '!' y pedimos solo el 'nombre'
             var result = await _supabase.From<Farm>()
-                .Select("*,perfiles:owner_id(nombre)")
                 .Get();
+            //Sintaxis ultra-específica: 1. Traemos todo de la granja (*) 2. Traemos el perfil usando el alias 'OwnerPerfil' 3. Especificamos la FK con '!' y pedimos solo el 'nombre'"result" no es NULL aquí.
+            /* var result = await _supabase.From<Farm>()
+                .Select("*, OwnerPerfil:perfiles!granja_owner_id_fkey(*)")
+                .Get(); */
 
             /* var result2 = await _supabase.From<Farm>()
                 .Select("*, OwnerPerfil:owner_id(*)")
@@ -84,6 +90,7 @@ public class SupabaseFarmService : IFarmService
             var result5 = await _supabase.From<Farm>()
                 .Select("id, nombre, ubicacion, owner_id, created_by, OwnerPerfil:perfiles!granja_owner_id_fkey(id, nombre)")
                 .Get(); */
+            Console.WriteLine(result);
 
 
             _cachedFarms = result.Models;

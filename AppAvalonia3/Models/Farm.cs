@@ -58,6 +58,6 @@ public class Farm : BaseModel
     public string CreatedBy { get; set; }
 
     // 👇 ESTA PARTE FALTA
-    [Reference(typeof(Perfil))]
+    [Reference(typeof(Perfil), foreignKey: "granja_owner_id_fkey")]
     public Perfil? OwnerPerfil { get; set; }
 }
