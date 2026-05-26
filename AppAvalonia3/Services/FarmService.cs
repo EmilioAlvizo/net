@@ -15,6 +15,7 @@ public interface IFarmService
 {
     Task<bool> CreateFarmAsync(string name, string location, string notes);
     Task<List<Farm>> GetUserFarmsAsync(bool forceRefresh = false);
+    Task<bool> DeleteFarmAsync(string farmId);
 }
 
 public class SupabaseFarmService : IFarmService
@@ -122,6 +123,25 @@ public class SupabaseFarmService : IFarmService
             _cachedFarms = null;
 
         return result.ResponseMessage.IsSuccessStatusCode;
+    }
+
+    public async Task<bool> DeleteFarmAsync(string farmId)
+    {
+        try
+        {
+            // Filtramos por el ID de la granja y ejecutamos el Delete
+            await _supabase.From<Farm>()
+                .Where(f => f.Id == farmId)
+                .Delete();
+
+            _cachedFarms = null; // Limpiamos caché para forzar recarga
+            return true;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error al eliminar en Supabase: {ex.Message}");
+            return false;
+        }
     }
 
 

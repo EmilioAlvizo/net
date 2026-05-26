@@ -34,7 +34,44 @@
                 <ItemsControl ItemsSource="{Binding Farms}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="models:Farm">
-                            <Border Background="{DynamicResource BgCardBrush}" CornerRadius="15" Margin="0,0,0,15" Padding="15">
+                            <Border Background="{DynamicResource BgCardBrush}"
+                                    CornerRadius="15"
+                                    Margin="0,0,0,15"
+                                    Padding="15"
+                                    PointerPressed="OnCardPointerPressed"> <FlyoutBase.AttachedFlyout>
+                                        <Flyout>
+                                            <Border Background="#1E222B" CornerRadius="12" Padding="15" Width="250" BorderBrush="#30363D" BorderThickness="1">
+                                                <StackPanel Spacing="12">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <TextBlock Text="⚠️" FontSize="16"/>
+                                                        <TextBlock Text="¿Eliminar granja?" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="Esta acción borrará la granja de forma permanente y no se puede deshacer."
+                                                               TextWrapping="Wrap"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+
+                                                    <Grid ColumnDefinitions="*, *" Margin="0,5,0,0">
+                                                        <Button Content="No"
+                                                                Background="Transparent"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Center"
+                                                                Command="{Binding $parent[Flyout].Hide}"/>
+                                                        <Button Grid.Column="1"
+                                                                Content="Sí, eliminar"
+                                                                Background="{DynamicResource AccentRedBrush}"
+                                                                Foreground="White"
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Center"
+                                                                Command="{Binding DataContext.DeleteFarmCommand, ElementName=RootControl}"
+                                                                CommandParameter="{Binding}" />
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Border>
+                                        </Flyout>
+                                    </FlyoutBase.AttachedFlyout>
+
                                 <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto, Auto">
 
                                     <TextBlock Text="{Binding Nombre}" Classes="H3" Foreground="White"/>

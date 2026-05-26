@@ -47,6 +47,7 @@ public partial class App : Application
         // 2. Registrar Navegación
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IFarmService, SupabaseFarmService>();
+        services.AddSingleton<IMiembrosService, SupabaseMiembrosService>();
 
         // 3. Registrar ViewModels
         services.AddSingleton<MainWindowViewModel>();

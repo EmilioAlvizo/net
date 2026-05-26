@@ -6,36 +6,6 @@ using Supabase.Postgrest.Attributes;
 
 namespace AppAvalonia3.Models;
 
-/* public record Farm(
-    [property: JsonPropertyName("id")] string? Id,
-    [property: JsonPropertyName("nombre")] string Nombre,
-    [property: JsonPropertyName("ubicacion")] string? Ubicacion,
-    [property: JsonPropertyName("descripcion")] string? Descripcion,
-    [property: JsonPropertyName("owner_id")] string OwnerId
-); */
-
-/* public class Farm 
-{
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; }
-
-    [JsonPropertyName("owner_id")]
-    public Guid OwnerId { get; set; }
-
-    [JsonPropertyName("nombre")]
-    public string Nombre { get; set; }
-
-    [JsonPropertyName("descripcion")]
-    public string? Descripcion { get; set; }
-
-    [JsonPropertyName("ubicacion")]
-    public string? Ubicacion { get; set; }
-
-    // Esta es la clave: el nombre debe coincidir con el alias que usaremos en la URL
-    [JsonPropertyName("OwnerPerfil")]
-    public Perfil? OwnerPerfil { get; set; }
-} */
-
 [Table("granjas")]
 public class Farm : BaseModel
 {

@@ -14,11 +14,10 @@ public partial class HomeViewModel : ObservableObject
     private readonly INavigationService _navigationService;
     private readonly IFarmService _farmService;
 
-    [ObservableProperty]
-    private ObservableCollection<Farm> _farms = new();
+    [ObservableProperty] private ObservableCollection<Farm> _farms = new();
 
-    [ObservableProperty]
-    private bool _isLoading;
+    [ObservableProperty] private bool _isLoading;
+    
 
     public bool IsDesktop => !OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS();
 
@@ -90,6 +89,44 @@ public partial class HomeViewModel : ObservableObject
             {
                 Farms.Add(farm);
             }
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    // En ViewModels/HomeViewModel.cs
+
+    [RelayCommand]
+    private async Task DeleteFarmAsync(Farm farm)
+    {
+        if (farm == null) return;
+
+        IsLoading = true;
+        try
+        {
+            // 1. Llamamos a Supabase para borrarla de la base de datos
+            bool eliminadoExitoso = await _farmService.DeleteFarmAsync(farm.Id);
+
+            if (eliminadoExitoso)
+            {
+                // 2. Si se borró en el backend, la removemos de la UI inmediatamente
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    Farms.Remove(farm);
+                });
+
+                System.Diagnostics.Debug.WriteLine($"Granja '{farm.Nombre}' eliminada con éxito.");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("No se pudo eliminar la granja de la base de datos.");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error en el proceso de borrado: {ex.Message}");
         }
         finally
         {
