@@ -62,6 +62,27 @@ public class SupabaseAuthService : IAuthService
         _session.Clear();
     }
 
+    /* public async Task Register()
+    {
+        try
+        {
+            var session = await _supabaseClient.Auth.SignUp();
+
+            if (session?.User != null)
+            {
+                // 3. Guardamos en el Singleton de sesión (como lo tenías antes)
+                _session.Token = session.AccessToken;
+                _session.UserId = session.User.Id;
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            return 
+        }
+    } */
+
     public string? GetToken() => _session.Token; 
     public string? GetUserId() => _session.UserId; 
 }

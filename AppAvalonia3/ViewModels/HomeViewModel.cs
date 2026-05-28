@@ -46,7 +46,7 @@ public partial class HomeViewModel : ObservableObject
 
         // Aquí navegas a la nueva pantalla pasándole el ID de la granja
         // Necesitarás crear CollaboratorsViewModel posteriormente
-        await _navigationService.NavigateToAsync<CollaboratorsViewModel>();
+        await _navigationService.NavigateToAsync<CollaboratorsViewModel>(selectedFarm);
     }
 
     [RelayCommand]

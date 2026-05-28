@@ -14,7 +14,7 @@ namespace AppAvalonia3.Services;
 public interface IMiembrosService
 {
     //Task<bool> CreateFarmAsync(string name, string location, string notes);
-    Task<List<MiembroGranja>> GetUserMiembrosAsync(bool forceRefresh = false);
+    Task<List<MiembroGranja>> GetUserMiembrosAsync(string miGranjaId, bool forceRefresh = false);
     //Task<bool> DeleteFarmAsync(string farmId);
 }
 
@@ -28,20 +28,20 @@ public class SupabaseMiembrosService : IMiembrosService
         _supabase = supabase;
     }
 
-    public async Task<List<MiembroGranja>> GetUserMiembrosAsync(bool forceRefresh = false)
+    public async Task<List<MiembroGranja>> GetUserMiembrosAsync(string miGranjaId, bool forceRefresh = false)
     {
         if (_cachedMiembros != null && !forceRefresh) 
         {
             return _cachedMiembros;
         }
 
-        var miGranjaId = "f510713a-e251-4b37-8235-e59844e3fee2";
+        //var miGranjaId = "f510713a-e251-4b37-8235-e59844e3fee2";
 
         try
         {
 
             var result = await _supabase.From<MiembroGranja>()
-                .Select("rol, perfiles!miembros_granja_user_id_fkey(nombre) ,granjas!miembros_granja_granja_id_fkey(nombre)")
+                .Select("granja_id,user_id,rol, perfiles!miembros_granja_user_id_fkey(nombre,email) ,granjas!miembros_granja_granja_id_fkey(nombre)")
                 .Filter("granja_id",Supabase.Postgrest.Constants.Operator.Equals, miGranjaId) // <-- Filtro para emparejar con el ID de la granja
                 .Get();
 

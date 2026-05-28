@@ -16,6 +16,9 @@ public class Perfil : BaseModel
     
     [Column("avatar_url")]
     public string? AvatarUrl { get; set; }
+
+    [Column("email")]
+    public string Email { get; set; }
 }
 
 /* [Table("perfiles")]
