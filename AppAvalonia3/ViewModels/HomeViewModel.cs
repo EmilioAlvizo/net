@@ -1,6 +1,7 @@
 // ViewModels/HomeViewModel.cs
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
@@ -17,8 +18,10 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<Farm> _farms = new();
 
     [ObservableProperty] private bool _isLoading;
-    
 
+    // Almacena la granja que se encuentra activa/seleccionada actualmente
+    [ObservableProperty] private Farm? _selectedFarm;
+    
     public bool IsDesktop => !OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS();
 
     public HomeViewModel(INavigationService navigationService, IFarmService farmService)
@@ -31,6 +34,17 @@ public partial class HomeViewModel : ObservableObject
 
         // Disparamos la carga inicial de datos de manera segura y asíncrona
         _ = LoadFarmsAsync();
+    }
+
+    [RelayCommand]
+    private async Task SelectFarmAsync(Farm farm)
+    {
+        if (farm == null) return;
+        
+        SelectedFarm = farm;
+        
+        // Navegamos a la pantalla de Animales pasándole la granja elegida como parámetro
+        await _navigationService.NavigateToAsync<AnimalesViewModel>(farm);
     }
 
     [RelayCommand]
@@ -65,6 +79,13 @@ public partial class HomeViewModel : ObservableObject
             {
                 Farms.Add(farm);
             }
+            // AUTO-SELECCIÓN: Si hay granjas, buscamos la que es de su propiedad o la primera por defecto
+            if (Farms.Count > 0)
+            {
+                // Buscamos si es dueño (puedes ajustar esta validación según tus propiedades de Farm)
+                var ownerFarm = Farms.FirstOrDefault(f => f.OwnerPerfil != null) ?? Farms.First();
+                SelectedFarm = ownerFarm;
+            }
         }
         finally
         {
@@ -88,6 +109,11 @@ public partial class HomeViewModel : ObservableObject
             foreach (var farm in realFarms)
             {
                 Farms.Add(farm);
+            }
+
+            if (Farms.Count > 0 && SelectedFarm == null)
+            {
+                SelectedFarm = Farms.First();
             }
         }
         finally
@@ -116,6 +142,10 @@ public partial class HomeViewModel : ObservableObject
                 {
                     Farms.Remove(farm);
                 });
+                if (SelectedFarm == farm)
+                {
+                    SelectedFarm = Farms.FirstOrDefault();
+                }
 
                 System.Diagnostics.Debug.WriteLine($"Granja '{farm.Nombre}' eliminada con éxito.");
             }

@@ -1,11 +1,203 @@
-<!-- /HomeView.axaml -->
+<!-- view/AnimalesView.axaml -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:AppAvalonia3.ViewModels"
-             x:Class="AppAvalonia3.Views.AnimalesView">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="¡Bienvenido a aves!" FontSize="20"/>
-    </StackPanel>
+             x:Class="AppAvalonia3.Views.AnimalesView"
+             x:DataType="vm:AnimalesViewModel">
+
+    <Panel>
+        <Grid RowDefinitions="Auto, Auto, *">
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="15,20,15,10">
+                <ListBox ItemsSource="{Binding Filtros}" SelectedItem="{Binding SelectedFilter}" Background="Transparent">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="8"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="15" Padding="15,8" Background="#262922">
+                                <TextBlock Text="{Binding}" Foreground="White" FontWeight="SemiBold"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+            <Grid Grid.Row="1" ColumnDefinitions="*, *, *" Margin="15,5">
+                <Border Grid.Column="0" Background="#22C55E" CornerRadius="20" Padding="15" Margin="4">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding AvesVivasCount}" FontSize="28" FontWeight="Bold" Foreground="#141612" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Aves vivas" FontSize="12" Foreground="#141612" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Background="#2A2D24" CornerRadius="20" Padding="15" Margin="4">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding GruposCount}" FontSize="28" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Grupos" FontSize="12" Foreground="Gray" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Background="#452C24" CornerRadius="20" Padding="15" Margin="4">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="{Binding MuertesCount}" FontSize="28" FontWeight="Bold" Foreground="#FF6B6B" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Muertes" FontSize="12" Foreground="#FF6B6B" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <ScrollViewer Grid.Row="2" Margin="15,15,15,0">
+                <ItemsControl ItemsSource="{Binding GroupCards}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#1C1E18" CornerRadius="24" Margin="0,0,0,15" Padding="18">
+                                <Grid RowDefinitions="Auto, Auto">
+                                    <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Nombre}" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                                            <TextBlock Text="{Binding Lots.Count}" Classes="Muted" FontSize="12"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                            <TextBlock Text="🦆" FontSize="18"/>
+                                            <TextBlock Text="{Binding TotalAves}" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="2" Background="#2563EB" CornerRadius="0,12,12,0" Width="30" Margin="10,-18,-18,-18">
+                                            <TextBlock Text="{Binding Tipo}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                <TextBlock.RenderTransform>
+                                                    <RotateTransform Angle="-90"/>
+                                                </TextBlock.RenderTransform>
+                                            </TextBlock>
+                                        </Border>
+                                    </Grid>
+
+                                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Lots}" Margin="0,15,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="#262922" CornerRadius="16" Padding="12" Margin="0,4">
+                                                    <Grid ColumnDefinitions="*, *, *, Auto">
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding Fecha, StringFormat='{}{0:dd de MMMM yyyy}'}" Foreground="White" FontSize="13"/>
+                                                            <TextBlock Text="{Binding Proposito}" Classes="Muted" FontSize="11"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                                            <TextBlock Text="{Binding Adquisicion}" Foreground="White" FontSize="13"/>
+                                                            <TextBlock Text="Adquisición" Classes="Muted" FontSize="11"/>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                                            <TextBlock Text="{Binding Muertes}" Foreground="#FF6B6B" FontSize="13"/>
+                                                            <TextBlock Text="Muertes" Classes="Muted" FontSize="11"/>
+                                                        </StackPanel>
+                                                        <TextBlock Grid.Column="3" Text="{Binding Cantidad}" FontSize="18" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid Background="#B0000000" IsVisible="{Binding IsFabMenuOpen}">
+            <Button Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Command="{Binding ToggleFabMenuCommand}"/>
+            <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,20,100" Spacing="10">
+                <Button Background="#2A2D24" CornerRadius="16" Padding="15,10" Command="{Binding OpenFormCommand}" CommandParameter="exemplar">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="+" Foreground="#EAA850"/>
+                        <TextBlock Text="Agregar ejemplares" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+                <Button Background="#2A2D24" CornerRadius="16" Padding="15,10" Command="{Binding OpenFormCommand}" CommandParameter="group">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="📁" Foreground="#EAA850"/>
+                        <TextBlock Text="Nuevo grupo" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+                <Button Background="#2A2D24" CornerRadius="16" Padding="15,10" Command="{Binding OpenFormCommand}" CommandParameter="type">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="🏷️" Foreground="#EAA850"/>
+                        <TextBlock Text="Nuevo tipo de animal" Foreground="White"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Button Width="60" Height="60" CornerRadius="30" Background="#2DD4BF"
+                HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,30"
+                Command="{Binding ToggleFabMenuCommand}">
+            <TextBlock Text="+" FontSize="30" Foreground="#141612" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Button>
+
+        <Grid Background="#141612" IsVisible="{Binding IsNewTypeOpen}" RowDefinitions="Auto, *">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="15,20">
+                <Button Command="{Binding CloseAllModalsCommand}" Background="Transparent"><TextBlock Text="←" FontSize="20" Foreground="White"/></Button>
+                <TextBlock Grid.Column="1" Text="Nuevo tipo de animal" FontSize="22" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10,0"/>
+            </Grid>
+            <StackPanel Grid.Row="1" Spacing="15">
+                <TextBlock Text="Nombre" Foreground="White"/>
+                <TextBox Watermark="Ej. Gallina, Pollo, Pato" Text="{Binding NewTypeName}" Background="#262922" BorderThickness="0" CornerRadius="10"/>
+                <TextBlock Text="Descripción" Foreground="White"/>
+                <TextBox Watermark="Notas sobre este tipo" Text="{Binding NewTypeDesc}" Height="100" AcceptsReturn="True" Background="#262922" BorderThickness="0" CornerRadius="10"/>
+                <Button Content="Guardar" Background="#EAA850" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" CornerRadius="15" Height="45" Command="{Binding SaveTypeCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Background="#141612" IsVisible="{Binding IsNewGroupOpen}" RowDefinitions="Auto, *">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="15,20">
+                <Button Command="{Binding CloseAllModalsCommand}" Background="Transparent"><TextBlock Text="←" FontSize="20" Foreground="White"/></Button>
+                <TextBlock Grid.Column="1" Text="Nuevo grupo" FontSize="22" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10,0"/>
+            </Grid>
+            <StackPanel Grid.Row="1" Spacing="15">
+                <TextBlock Text="Tipo de animal" Foreground="White"/>
+                <ComboBox ItemsSource="{Binding AvailableTypes}" SelectedItem="{Binding SelectedTypeForGroup}" HorizontalAlignment="Stretch" Background="#262922"/>
+                <TextBlock Text="Nombre del grupo" Foreground="White"/>
+                <TextBox Watermark="Ej. Gallinero principal" Text="{Binding NewGroupName}" Background="#262922" BorderThickness="0" CornerRadius="10"/>
+                <Button Content="Guardar" Background="#EAA850" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" CornerRadius="15" Height="45" Command="{Binding SaveGroupCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Background="#141612" IsVisible="{Binding IsAddExemplarOpen}" RowDefinitions="Auto, *">
+            <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="15,20">
+                <Button Command="{Binding CloseAllModalsCommand}" Background="Transparent"><TextBlock Text="←" FontSize="20" Foreground="White"/></Button>
+                <TextBlock Grid.Column="1" Text="Agregar ejemplares" FontSize="22" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10,0"/>
+            </Grid>
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Tipo de animal" Foreground="White"/>
+                    <ComboBox ItemsSource="{Binding Filtros}" SelectedItem="{Binding SelectedTypeForExemplar}" HorizontalAlignment="Stretch" Background="#262922"/>
+
+                    <TextBlock Text="Grupo / corral" Foreground="White"/>
+                    <ComboBox ItemsSource="{Binding GroupsForSelectedType}" SelectedItem="{Binding SelectedGroupForExemplar}" HorizontalAlignment="Stretch" Background="#262922"/>
+
+                    <TextBlock Text="Cantidad" Foreground="White"/>
+                    <TextBox Text="{Binding ExemplarQuantity}" Background="#262922" BorderThickness="0"/>
+
+                    <TextBlock Text="Brazaletes (opcional)" Foreground="White"/>
+                    <ItemsControl ItemsSource="{Binding AvailableBrazaletes}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ToggleButton Content="{Binding Number}" IsChecked="{Binding IsSelected}" Margin="4" CornerRadius="8" Background="#2A2D24" Foreground="White"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Fecha" Foreground="White"/>
+                    <DatePicker SelectedDate="{Binding ExemplarDate}" HorizontalAlignment="Stretch"/>
+
+                    <Button Content="Guardar" Background="#EAA850" Foreground="Black" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" CornerRadius="15" Height="45" Margin="0,20,0,0" Command="{Binding SaveExemplarCommand}"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+    </Panel>
 </UserControl>

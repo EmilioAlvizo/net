@@ -14,10 +14,10 @@ namespace AppAvalonia3.Services;
 public interface INavigationService
 {
     Task NavigateToAsync<T>() where T : class;
-    
+
     // NUEVO: Sobrecarga que permite enviar un parámetro a la vista destino
     Task NavigateToAsync<T>(object parameter) where T : class;
-    
+
     void SetMainViewModel(object mainVM);
 }
 
@@ -42,12 +42,15 @@ public class NavigationService : INavigationService
 
         var viewModel = _serviceProvider.GetRequiredService<T>();
 
-        if (typeof(T) != typeof(LoginViewModel))
-        {
-            _mainVM.IsLoggedIn = true;
-        }
+        // ViewModels que ocultan header y navbar
+        var hideShell = typeof(T) == typeof(LoginViewModel)
+                     || typeof(T) == typeof(CollaboratorsViewModel)
+                     || typeof(T) == typeof(AddFarmViewModel);
 
+        _mainVM.IsLoggedIn = typeof(T) != typeof(LoginViewModel);
+        _mainVM.ShowShell = !hideShell;
         _mainVM.CurrentView = viewModel;
+
         await Task.CompletedTask;
     }
 
@@ -59,6 +62,13 @@ public class NavigationService : INavigationService
         // 1. Obtenemos el ViewModel destino
         var viewModel = _serviceProvider.GetRequiredService<T>();
 
+        var hideShell = typeof(T) == typeof(LoginViewModel)
+                 || typeof(T) == typeof(CollaboratorsViewModel)
+                 || typeof(T) == typeof(AddFarmViewModel);
+
+        _mainVM.IsLoggedIn = typeof(T) != typeof(LoginViewModel);
+        _mainVM.ShowShell = !hideShell;
+
         // 2. Si el ViewModel tiene la capacidad de inicializarse con datos, se los pasamos
         if (viewModel is CollaboratorsViewModel collaboratorsVM && parameter is Models.Farm farm)
         {
@@ -68,6 +78,18 @@ public class NavigationService : INavigationService
         }
 
         // Puedes añadir más "cases" o ifs en el futuro si otros ViewModels reciben otros parámetros
+        // 2. Agregamos el caso para AnimalesViewModel
+        if (viewModel is AnimalesViewModel animalesVM)
+        {
+            if (parameter is Models.Farm farmAnimales) // <-- Cambiado aquí
+            {
+                _ = animalesVM.InitializeAsync(farmAnimales.Id);
+            }
+            else if (parameter is string granjaId)
+            {
+                _ = animalesVM.InitializeAsync(granjaId);
+            }
+        }
 
         if (typeof(T) != typeof(LoginViewModel))
         {

@@ -16,6 +16,9 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private bool _isLoggedIn;
 
+    [ObservableProperty]
+    private bool _showShell;
+
     // 1. Inyectamos el servicio de navegación en el constructor
     public MainWindowViewModel(INavigationService navigationService)
     {
@@ -49,6 +52,7 @@ public partial class MainWindowViewModel : ObservableObject
     public async Task FinishLogin()
     {
         IsLoggedIn = true;
+        ShowShell = true;
         await ShowHome();
     }
 }

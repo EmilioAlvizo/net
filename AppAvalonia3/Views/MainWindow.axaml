@@ -34,7 +34,7 @@
     <Grid RowDefinitions="Auto, *, Auto">
 
         <!-- 1. CABECERA (FIJA) -->
-        <Grid Grid.Row="0" IsVisible="{Binding IsLoggedIn}" Margin="20,52,20,16" ColumnDefinitions="Auto, *, Auto">
+        <Grid Grid.Row="0" IsVisible="{Binding ShowShell}" Margin="20,52,20,16" ColumnDefinitions="Auto, *, Auto">
             <!-- Icono de la App -->
             <Ellipse Grid.Column="0" Width="35" Height="35" Fill="Gray"/>
 
@@ -63,7 +63,7 @@
         </ScrollViewer>
 
         <!-- 3. BARRA DE NAVEGACIÓN INFERIOR (FIJA) -->
-        <Border Grid.Row="2" IsVisible="{Binding IsLoggedIn}" Background="#1a1a1a" CornerRadius="20,20,0,0" Padding="10">
+        <Border Grid.Row="2" IsVisible="{Binding ShowShell}" Background="#1a1a1a" CornerRadius="20,20,0,0" Padding="10">
             <UniformGrid Columns="5">
                 <Button Command="{Binding ShowHomeCommand}" Classes="Ghost" HorizontalAlignment="Center">
                     <TextBlock Text="🏠" FontSize="20"/>

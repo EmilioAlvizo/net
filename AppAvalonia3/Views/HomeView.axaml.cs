@@ -19,13 +19,13 @@ public partial class HomeView : UserControl
     {
         // Obtenemos el "deferral" para controlar la animación visual de carga
         var deferral = e.GetDeferral();
-        
+
         if (DataContext is HomeViewModel viewModel)
         {
             // Llamamos a tu comando de refresco real en Supabase
             await viewModel.ForceRefreshFarmsAsync();
         }
-        
+
         // Le avisamos a Avalonia que la descarga terminó para que oculte el spinner
         deferral.Complete();
     }
@@ -36,12 +36,25 @@ public partial class HomeView : UserControl
         if (sender is Border card)
         {
             var pointerUpdate = e.GetCurrentPoint(card);
-            
+
             // Detecta Clic Derecho en PC o pulsación larga en pantallas táctiles modernas
             if (pointerUpdate.Properties.IsRightButtonPressed || e.Pointer.Type == PointerType.Touch)
             {
                 FlyoutBase.ShowAttachedFlyout(card);
                 e.Handled = true;
+            }
+        }
+    }
+
+    // Este método se ejecutará cuando el usuario haga click izquierdo o toque normal en la tarjeta
+    private void OnCardTapped(object? sender, Avalonia.Input.TappedEventArgs e)
+    {
+        if (sender is Border card && card.DataContext is Models.Farm selectedFarm)
+        {
+            if (DataContext is HomeViewModel viewModel)
+            {
+                // Ejecutamos el comando de selección pasando el objeto granja
+                viewModel.SelectFarmCommand.Execute(selectedFarm);
             }
         }
     }
