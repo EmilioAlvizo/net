@@ -54,6 +54,7 @@ public partial class App : Application
         services.AddTransient<LoginViewModel>(); // Transient = se crea uno nuevo cada vez
         services.AddTransient<HomeViewModel>();
         services.AddTransient<HuevosViewModel>();
+        services.AddTransient<AnimalesViewModel>();
         services.AddTransient<AddFarmViewModel>();
         services.AddTransient<CollaboratorsViewModel>();
 

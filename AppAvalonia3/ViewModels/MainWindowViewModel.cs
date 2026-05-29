@@ -39,6 +39,12 @@ public partial class MainWindowViewModel : ObservableObject
         await _navigationService.NavigateToAsync<HuevosViewModel>();
     }
 
+    [RelayCommand]
+    public async Task ShowAnimales()
+    {
+        await _navigationService.NavigateToAsync<AnimalesViewModel>();
+    }
+
     // Si necesitas una función para terminar el login (como tenías en comentarios)
     public async Task FinishLogin()
     {
@@ -46,3 +52,4 @@ public partial class MainWindowViewModel : ObservableObject
         await ShowHome();
     }
 }
+

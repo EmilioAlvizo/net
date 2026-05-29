@@ -99,12 +99,24 @@ public partial class CollaboratorsViewModel : ObservableObject
     [RelayCommand]
     public void OpenEditRole(MiembroGranja miembro)
     {
-        if (miembro == null) return;
         SelectedMemberForEdit = miembro;
         IsEditRoleOpen = true;
+        /* InviteSelectedRol = miembro.Rol?.ToLower() == "editor" ? "editor" : "viewer";
+        switch (InviteSelectedRol)
+        {
+            case "editor":
+                OnPropertyChanged(nameof(IsEditVisorSelected));
+                break;
+            case "viewer":
+                OnPropertyChanged(nameof(IsEditAdminSelected));
+                break;
+        }
+
+        var f=IsEditAdminSelected;
+        var f2=IsEditVisorSelected; */
 
         System.Diagnostics.Debug.WriteLine($"SelectedMemberForEdit: {SelectedMemberForEdit}");
-        
+
     }
 
     [RelayCommand]
@@ -123,17 +135,18 @@ public partial class CollaboratorsViewModel : ObservableObject
         IsLoading = true;
         try
         {
-            // 1. Actualizar en Supabase usando el servicio (asumiendo que tu método recibe el ID del registro y el rol)
-            // Ojo: usa el nombre exacto de tu ENUM de Postgres ('editor', 'viewer' o como lo tengas mapeado)
             string rolDb = nuevoRol.ToLower();
 
-            // Ejemplo de llamada a tu servicio:
+            // Aquí irá tu llamada de actualización al servicio en Supabase cuando la descomentes
             // bool exito = await _miembrosService.UpdateMemberRoleAsync(SelectedMemberForEdit.Id, rolDb);
 
-            // 2. Si el backend responde exitosamente, actualizamos la UI localmente
+            // Actualizamos la UI localmente
             SelectedMemberForEdit.Rol = nuevoRol;
 
-            // Forzamos un refresco visual o notificamos si es necesario
+            // Forzamos la actualización de los estilos de las tarjetas en el modal
+            OnPropertyChanged(nameof(IsEditVisorSelected));
+            OnPropertyChanged(nameof(IsEditAdminSelected));
+
             IsEditRoleOpen = false;
         }
         catch (Exception ex)
@@ -154,13 +167,13 @@ public partial class CollaboratorsViewModel : ObservableObject
 
         IsLoading = true;
 
-        var f =SelectedMemberForEdit;
+        var f = SelectedMemberForEdit;
 
         System.Diagnostics.Debug.WriteLine($"SelectedMemberForEdit: {SelectedMemberForEdit}");
         System.Diagnostics.Debug.WriteLine($"SelectedMemberForEdit.Id: {SelectedMemberForEdit.UserId}");
         System.Diagnostics.Debug.WriteLine($"SelectedMemberForEdit.GranjaId: {SelectedMemberForEdit.GranjaId}");
         System.Diagnostics.Debug.WriteLine($"SelectedMemberForEdit.UserId: {SelectedMemberForEdit.UserId}");
-        
+
         //System.Diagnostics.Debug.WriteLine($"miembro: {miembro.Id}");
         try
         {
@@ -192,6 +205,8 @@ public partial class CollaboratorsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsVisorSelected))]
     [NotifyPropertyChangedFor(nameof(IsAdminSelected))]
+    [NotifyPropertyChangedFor(nameof(IsEditVisorSelected))]
+    [NotifyPropertyChangedFor(nameof(IsEditAdminSelected))]
     private string _inviteSelectedRol = "viewer";
 
     // Si el rol es "viewer", esto devuelve true
@@ -199,6 +214,10 @@ public partial class CollaboratorsViewModel : ObservableObject
 
     // Si el rol es "editor", esto devuelve true
     public bool IsAdminSelected => InviteSelectedRol == "editor";
+
+    // Propiedades calculadas para el estado del rol del miembro seleccionado
+    public bool IsEditVisorSelected => SelectedMemberForEdit?.Rol?.ToLower() == "viewer";
+    public bool IsEditAdminSelected => SelectedMemberForEdit?.Rol?.ToLower() == "editor";
 
     [RelayCommand]
     private void OpenAddMember()
