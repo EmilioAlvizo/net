@@ -45,7 +45,8 @@ public class NavigationService : INavigationService
         // ViewModels que ocultan header y navbar
         var hideShell = typeof(T) == typeof(LoginViewModel)
                      || typeof(T) == typeof(CollaboratorsViewModel)
-                     || typeof(T) == typeof(AddFarmViewModel);
+                     || typeof(T) == typeof(AddFarmViewModel)
+             || typeof(T) == typeof(AnimalesFormViewModel);
 
         _mainVM.IsLoggedIn = typeof(T) != typeof(LoginViewModel);
         _mainVM.ShowShell = !hideShell;
@@ -64,7 +65,8 @@ public class NavigationService : INavigationService
 
         var hideShell = typeof(T) == typeof(LoginViewModel)
                  || typeof(T) == typeof(CollaboratorsViewModel)
-                 || typeof(T) == typeof(AddFarmViewModel);
+                 || typeof(T) == typeof(AddFarmViewModel)
+             || typeof(T) == typeof(AnimalesFormViewModel);
 
         _mainVM.IsLoggedIn = typeof(T) != typeof(LoginViewModel);
         _mainVM.ShowShell = !hideShell;
@@ -89,6 +91,14 @@ public class NavigationService : INavigationService
             {
                 _ = animalesVM.InitializeAsync(granjaId);
             }
+        }
+
+        if (viewModel is AnimalesFormViewModel formVM && parameter is string formParam)
+        {
+            // formParam = "type|granjaId", "group|granjaId", "exemplar|granjaId"
+            Console.WriteLine($">>> NavigationService formParam: '{formParam}'");
+            var parts = formParam.Split('|');
+            formVM.Initialize(parts[0], parts.Length > 1 ? parts[1] : string.Empty);
         }
 
         if (typeof(T) != typeof(LoginViewModel))

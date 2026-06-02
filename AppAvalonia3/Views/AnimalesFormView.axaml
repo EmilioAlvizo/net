@@ -1,0 +1,154 @@
+<!-- View/AnimalesFormView.axaml -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AppAvalonia3.ViewModels"
+             x:Class="AppAvalonia3.Views.AnimalesFormView"
+             x:DataType="vm:AnimalesFormViewModel"
+             Background="#141612">
+
+    <Grid RowDefinitions="Auto, Auto, *">
+
+        <!-- Header con botón back -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="15,48,15,10">
+            <Button Grid.Column="0"
+                    Command="{Binding GoBackCommand}"
+                    Background="Transparent" Padding="8">
+                <TextBlock Text="←" FontSize="22" Foreground="White"/>
+            </Button>
+
+            <!-- Título dinámico según formulario activo -->
+            <TextBlock Grid.Column="1"
+                       Text="{Binding FormTitle}"
+                       FontSize="22" FontWeight="Bold" Foreground="White"
+                       VerticalAlignment="Center" Margin="8,0"/>
+
+        </Grid>
+
+        <!-- Error banner -->
+        <Border Grid.Row="1"
+                Background="#2D1515" BorderBrush="#7F1D1D"
+                BorderThickness="1" CornerRadius="10"
+                Margin="15,0" Padding="12,8"
+                IsVisible="{Binding HasError}">
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="#FCA5A5" FontSize="13" TextWrapping="Wrap"/>
+        </Border>
+
+        <!-- Contenido scrollable -->
+        <ScrollViewer Grid.Row="2" Margin="15,10,15,0">
+            <Panel>
+
+                <!-- ── Formulario: Nuevo tipo de animal ─────────────────── -->
+                <StackPanel Spacing="14" IsVisible="{Binding IsNewTypeOpen}">
+                    <TextBlock Text="Nombre" Foreground="White"/>
+                    <TextBox PlaceholderText="Ej. Gallina, Pollo, Pato"
+                             Text="{Binding NewTypeName}"
+                             Background="#262922" BorderThickness="0" CornerRadius="10"
+                             Foreground="White" Padding="12,10"/>
+
+                    <TextBlock Text="Descripción" Foreground="White"/>
+                    <TextBox PlaceholderText="Notas sobre este tipo"
+                             Text="{Binding NewTypeDesc}"
+                             Height="100" AcceptsReturn="True"
+                             Background="#262922" BorderThickness="0" CornerRadius="10"
+                             Foreground="White" Padding="12,10"/>
+
+                    <Button Content="Guardar"
+                            Background="#EAA850" Foreground="Black"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            CornerRadius="15" Height="48"
+                            Margin="0,10,0,0"
+                            IsEnabled="{Binding !IsLoading}"
+                            Command="{Binding SaveTypeCommand}"/>
+                </StackPanel>
+
+                <!-- ── Formulario: Nuevo grupo ───────────────────────────── -->
+                <StackPanel Spacing="14" IsVisible="{Binding IsNewGroupOpen}">
+                    <TextBlock Text="Tipo de animal" Foreground="White"/>
+                    <ComboBox ItemsSource="{Binding AvailableTypes}"
+                              SelectedItem="{Binding SelectedTypeForGroup}"
+                              HorizontalAlignment="Stretch"
+                              Background="#262922"/>
+
+                    <TextBlock Text="Nombre del grupo" Foreground="White"/>
+                    <TextBox PlaceholderText="Ej. Gallinero principal"
+                             Text="{Binding NewGroupName}"
+                             Background="#262922" BorderThickness="0" CornerRadius="10"
+                             Foreground="White" Padding="12,10"/>
+
+                    <Button Content="Guardar"
+                            Background="#EAA850" Foreground="Black"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            CornerRadius="15" Height="48"
+                            Margin="0,10,0,0"
+                            IsEnabled="{Binding !IsLoading}"
+                            Command="{Binding SaveGroupCommand}"/>
+                </StackPanel>
+
+                <!-- ── Formulario: Agregar ejemplares ────────────────────── -->
+                <StackPanel Spacing="14" IsVisible="{Binding IsAddExemplarOpen}">
+                    <TextBlock Text="Tipo de animal" Foreground="White"/>
+                    <ComboBox ItemsSource="{Binding AvailableTypes}"
+                              SelectedItem="{Binding SelectedTypeForExemplar}"
+                              HorizontalAlignment="Stretch"
+                              Background="#262922"/>
+
+                    <TextBlock Text="Grupo / corral" Foreground="White"/>
+                    <ComboBox ItemsSource="{Binding GroupsForSelectedType}"
+                              SelectedItem="{Binding SelectedGroupForExemplar}"
+                              HorizontalAlignment="Stretch"
+                              Background="#262922"/>
+
+                    <TextBlock Text="Cantidad" Foreground="White"/>
+                    <TextBox Text="{Binding ExemplarQuantity}"
+                             Background="#262922" BorderThickness="0" CornerRadius="10"
+                             Foreground="White" Padding="12,10"/>
+
+                    <TextBlock Text="Brazaletes (opcional)" Foreground="White"/>
+                    <ItemsControl ItemsSource="{Binding AvailableBrazaletes}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:BrazaleteItem">
+                                <ToggleButton Content="{Binding Number}"
+                                              IsChecked="{Binding IsSelected}"
+                                              Margin="4" CornerRadius="8"
+                                              Background="#2A2D24" Foreground="White"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Fecha" Foreground="White"/>
+                    <DatePicker SelectedDate="{Binding ExemplarDate}"
+                                HorizontalAlignment="Stretch"/>
+
+                    <Button Content="Guardar"
+                            Background="#EAA850" Foreground="Black"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            CornerRadius="15" Height="48"
+                            Margin="0,20,0,30"
+                            IsEnabled="{Binding !IsLoading}"
+                            Command="{Binding SaveExemplarCommand}"/>
+                </StackPanel>
+
+                <!-- Loading indicator -->
+                <Border IsVisible="{Binding IsLoading}"
+                        Background="#80000000"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                    <TextBlock Text="Guardando..."
+                               Foreground="White" FontSize="16"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Margin="0,40"/>
+                </Border>
+            </Panel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

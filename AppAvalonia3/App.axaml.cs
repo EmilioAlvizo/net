@@ -55,6 +55,7 @@ public partial class App : Application
         services.AddTransient<HomeViewModel>();
         services.AddTransient<HuevosViewModel>();
         services.AddTransient<AnimalesViewModel>();
+        services.AddTransient<AnimalesFormViewModel>();
         services.AddTransient<AddFarmViewModel>();
         services.AddTransient<CollaboratorsViewModel>();
 

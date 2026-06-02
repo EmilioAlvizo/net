@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using AppAvalonia3.Models;
 using Supabase;
+using AppAvalonia3.Services;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -17,6 +18,7 @@ namespace AppAvalonia3.ViewModels;
 public partial class AnimalesViewModel : ObservableObject
 {
     private readonly Client _supabase;
+    private readonly INavigationService _navigationService;
     private string? _granjaId; // Se puede pasar en la inicialización
 
     // Listas maestras desde DB
@@ -59,13 +61,15 @@ public partial class AnimalesViewModel : ObservableObject
     public ObservableCollection<string> GroupsForSelectedType { get; } = new();
     public ObservableCollection<BrazaleteItem> AvailableBrazaletes { get; } = new();
 
-    public AnimalesViewModel(Client supabase)
+    public AnimalesViewModel(Client supabase, INavigationService navigationService)
     {
         _supabase = supabase;
+        _navigationService = navigationService;
     }
 
     public async Task InitializeAsync(string granjaId)
     {
+        Console.WriteLine($">>> InitializeAsync granjaId: '{granjaId}'");
         _granjaId = granjaId;
 
         // Ahora sí, cargamos los datos usando el ID real
@@ -132,12 +136,11 @@ public partial class AnimalesViewModel : ObservableObject
     [RelayCommand] private void ToggleFabMenu() => IsFabMenuOpen = !IsFabMenuOpen;
 
     [RelayCommand]
-    private void OpenForm(string formType)
+    private async Task OpenFormAsync(string formType)
     {
+        Console.WriteLine($">>> OpenFormAsync llamado con: '{formType}'");
         IsFabMenuOpen = false;
-        if (formType == "type") IsNewTypeOpen = true;
-        if (formType == "group") { IsNewGroupOpen = true; AvailableTypes.Clear(); AvailableTypes.Add("Gallina"); AvailableTypes.Add("Pollo"); }
-        if (formType == "exemplar") { IsAddExemplarOpen = true; UpdateExemplarGroups(); }
+        await _navigationService.NavigateToAsync<AnimalesFormViewModel>($"{formType}|{_granjaId}");
     }
 
     [RelayCommand]

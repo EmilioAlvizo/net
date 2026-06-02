@@ -20,6 +20,9 @@
         <DataTemplate DataType="{x:Type vm:AnimalesViewModel}">
             <views:AnimalesView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AnimalesFormViewModel}">
+            <views:AnimalesFormView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:HuevosViewModel}">
             <views:HuevosView />
         </DataTemplate>
